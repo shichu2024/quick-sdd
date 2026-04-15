@@ -1,0 +1,123 @@
+{
+  "repository": {
+    "name": "quick-sdd",
+    "type": "skill-collection",
+    "default_bundle": "quick-sdd-full"
+  },
+  "skills": [
+    {
+      "name": "quick-sdd",
+      "path": "skills/quick-sdd",
+      "role": "orchestrator",
+      "standalone": true,
+      "depends_on": [],
+      "recommended": true,
+      "description": "初始化、续跑和治理轻量级 SDD 工作区。"
+    },
+    {
+      "name": "quick-sdd-pm",
+      "path": "skills/quick-sdd-pm",
+      "role": "pm",
+      "standalone": false,
+      "depends_on": [
+        "quick-sdd"
+      ],
+      "recommended": true,
+      "description": "负责路由、状态推进和 QA 裁决回流。"
+    },
+    {
+      "name": "quick-sdd-bootstrap-existing",
+      "path": "skills/quick-sdd-bootstrap-existing",
+      "role": "bootstrap",
+      "standalone": false,
+      "depends_on": [
+        "quick-sdd"
+      ],
+      "recommended": true,
+      "description": "为已有项目补齐 quick-sdd 工作区，并反向沉淀现状 SDD 文档。"
+    },
+    {
+      "name": "quick-sdd-ra",
+      "path": "skills/quick-sdd-ra",
+      "role": "ra",
+      "standalone": true,
+      "depends_on": [],
+      "recommended": true,
+      "description": "负责 proposal 和 stories 的需求分析。"
+    },
+    {
+      "name": "quick-sdd-ta",
+      "path": "skills/quick-sdd-ta",
+      "role": "ta",
+      "standalone": true,
+      "depends_on": [],
+      "recommended": true,
+      "description": "负责 tasks、ACL、依赖和 verify 设计。"
+    },
+    {
+      "name": "quick-sdd-dev",
+      "path": "skills/quick-sdd-dev",
+      "role": "dev",
+      "standalone": true,
+      "depends_on": [],
+      "recommended": true,
+      "description": "负责单 task 实现、verify 执行和证据回收。"
+    },
+    {
+      "name": "quick-sdd-qa",
+      "path": "skills/quick-sdd-qa",
+      "role": "qa",
+      "standalone": true,
+      "depends_on": [],
+      "recommended": true,
+      "description": "负责验证裁决、根因分类和 validation-report 落盘。"
+    }
+  ],
+  "bundles": [
+    {
+      "name": "quick-sdd-full",
+      "description": "推荐安装的完整协作套件，包含主编排 skill、存量项目接入 skill 和全部角色 skill。",
+      "skills": [
+        "quick-sdd",
+        "quick-sdd-pm",
+        "quick-sdd-bootstrap-existing",
+        "quick-sdd-ra",
+        "quick-sdd-ta",
+        "quick-sdd-dev",
+        "quick-sdd-qa"
+      ]
+    },
+    {
+      "name": "quick-sdd-runtime",
+      "description": "最小运行时与路由组合，适合只做初始化、续跑和派发。",
+      "skills": [
+        "quick-sdd",
+        "quick-sdd-pm"
+      ]
+    },
+    {
+      "name": "quick-sdd-existing-project",
+      "description": "已有项目接入组合，适合先补齐 codespec 再反向沉淀 baseline SDD 文档。",
+      "skills": [
+        "quick-sdd",
+        "quick-sdd-bootstrap-existing"
+      ]
+    },
+    {
+      "name": "quick-sdd-design",
+      "description": "需求和技术设计组合，适合只做 proposal、stories 和 tasks 规划。",
+      "skills": [
+        "quick-sdd-ra",
+        "quick-sdd-ta"
+      ]
+    },
+    {
+      "name": "quick-sdd-execution",
+      "description": "执行和验证组合，适合只做实现和 QA 验证。",
+      "skills": [
+        "quick-sdd-dev",
+        "quick-sdd-qa"
+      ]
+    }
+  ]
+}

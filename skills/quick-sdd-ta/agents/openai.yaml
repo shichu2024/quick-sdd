@@ -1,0 +1,4 @@
+interface:
+  display_name: "Quick SDD TA"
+  short_description: "负责 Quick SDD 的任务拆解、ACL 规划与依赖设计"
+  default_prompt: "使用 $quick-sdd-ta 把当前 stories 转成可执行 tasks。"

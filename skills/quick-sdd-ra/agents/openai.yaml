@@ -1,0 +1,4 @@
+interface:
+  display_name: "Quick SDD RA"
+  short_description: "负责 Quick SDD 的需求分析、范围收敛与 story 拆分"
+  default_prompt: "使用 $quick-sdd-ra 把当前需求整理成 proposal 和 stories。"
