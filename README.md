@@ -7,7 +7,7 @@
 - 提供主编排 skill：`quick-sdd`
 - 提供 1 个存量项目接入 skill：`quick-sdd-bootstrap-existing`
 - 提供 5 个独立可发现的角色 skill：`quick-sdd-pm / quick-sdd-ra / quick-sdd-ta / quick-sdd-dev / quick-sdd-qa`
-- 提供运行时脚本、模板和参考规约，用于初始化、续跑、权限展开和 QA 回流
+- 提供运行时脚本、模板和参考规约，用于初始化、续跑、权限展开、QA 回流与角色能力复用
 
 ## 仓库定位
 
@@ -15,24 +15,36 @@
 - 兼容 Claude / Codex 风格的多 agent 协作
 - 把角色职责、状态流转、验证回流和 ACL 约束落到文件与脚本，而不只是提示词约定
 - 把“主 skill 编排”和“角色 skill 执行”拆开，便于独立发现、组合安装和 repo-path 发布
+- 让角色 skill 不只围绕 SDD 流程，还内置各自的专业实践、质量门禁和反模式约束
 
 ## Installable Skills
 
 | Skill | 作用 | 是否可单独安装 |
 | --- | --- | --- |
 | `quick-sdd` | 初始化 `codespec/`、续跑工作区、驱动主流程和 runtime 脚本，不跨角色包办整条需求 | 是 |
-| `quick-sdd-pm` | 路由、派发、续跑、状态推进、吸收 QA 裁决，不代替其他角色执行需求 | 需要同时安装 `quick-sdd` |
+| `quick-sdd-pm` | 路由、派发、续跑、状态推进、门禁判断与 QA 回流，不代替其他角色执行需求 | 需要同时安装 `quick-sdd` |
 | `quick-sdd-bootstrap-existing` | 初始化已有项目、盘点功能与架构、反向生成 baseline SDD 文档 | 需要同时安装 `quick-sdd` |
-| `quick-sdd-ra` | 需求分析、范围收敛、`proposal / stories` 生成 | 是 |
-| `quick-sdd-ta` | `tasks` 拆解、依赖设计、ACL 规划、`verify` 设计 | 是 |
-| `quick-sdd-dev` | 单 task 实现、`verify` 执行、证据回收 | 是 |
-| `quick-sdd-qa` | 验收裁决、缺陷回流、`validation-report` 维护 | 是 |
+| `quick-sdd-ra` | 需求澄清、价值切片、范围收敛、`proposal / stories` 生成 | 是 |
+| `quick-sdd-ta` | `tasks` 拆解、架构边界、依赖设计、ACL 规划、`verify` 设计 | 是 |
+| `quick-sdd-dev` | 单 task 实现、TDD/验证循环、`verify` 执行、证据回收 | 是 |
+| `quick-sdd-qa` | 验收裁决、缺陷分级、回流建议、`validation-report` 维护 | 是 |
 
 说明：
 
 - `quick-sdd-pm` 会调用 `quick-sdd` 中的 runtime 脚本，所以不建议单独安装。
 - 推荐默认安装整组 bundle，而不是只装 `pm`。
 - 即使用户直接把完整需求交给 `quick-sdd` 或 `quick-sdd-pm`，预期行为也应是“初始化或续跑 + 派发下一角色”，而不是跨角色把 `proposal / tasks / code / validation-report` 一次做完。
+
+## 角色专业能力增强
+
+这套角色 skill 现在不再只是“流程占位符”，而是“流程协议 + 专业实践”双层结构：
+
+- `PM`：强调编排治理、去噪重述、门禁判断、阻塞恢复和派发收口。
+- `RA`：强调需求澄清、用户价值切片、story readiness 和 traceability。
+- `TA`：强调架构边界、ownership、浅依赖拆解、接口契约和验证设计。
+- `DEV`：强调 task 边界内实现、TDD 思维、verification loop、证据优先和回归风险控制。
+- `QA`：强调 readiness 检查、证据驱动裁决、缺陷分级、根因分类和回流建议。
+- 共享方法沉淀在 `skills/quick-sdd/references/role-capability-playbook.md`，用于减少五个角色之间的重复说明。
 
 ## 发布约定
 

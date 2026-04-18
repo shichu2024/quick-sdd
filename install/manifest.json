@@ -12,7 +12,7 @@
       "standalone": true,
       "depends_on": [],
       "recommended": true,
-      "description": "初始化、续跑和治理轻量级 SDD 工作区，并把工作派发给下一角色。"
+      "description": "初始化、续跑和治理轻量级 SDD 工作区，并把工作派发给具备专业实践约束的下一角色。"
     },
     {
       "name": "quick-sdd-pm",
@@ -23,7 +23,7 @@
         "quick-sdd"
       ],
       "recommended": true,
-      "description": "负责路由、状态推进和 QA 裁决回流，不直接代替其他角色执行需求。"
+      "description": "负责路由、状态推进、门禁判断、阻塞恢复和 QA 裁决回流，不直接代替其他角色执行需求。"
     },
     {
       "name": "quick-sdd-bootstrap-existing",
@@ -43,7 +43,7 @@
       "standalone": true,
       "depends_on": [],
       "recommended": true,
-      "description": "负责 proposal 和 stories 的需求分析。"
+      "description": "负责需求澄清、价值切片、proposal 与 stories 的需求分析。"
     },
     {
       "name": "quick-sdd-ta",
@@ -52,7 +52,7 @@
       "standalone": true,
       "depends_on": [],
       "recommended": true,
-      "description": "负责 tasks、ACL、依赖和 verify 设计。"
+      "description": "负责 tasks、架构边界、ACL、依赖和 verify 设计。"
     },
     {
       "name": "quick-sdd-dev",
@@ -61,7 +61,7 @@
       "standalone": true,
       "depends_on": [],
       "recommended": true,
-      "description": "负责单 task 实现、verify 执行和证据回收。"
+      "description": "负责单 task 实现、TDD/verify 执行和证据回收。"
     },
     {
       "name": "quick-sdd-qa",
@@ -70,7 +70,7 @@
       "standalone": true,
       "depends_on": [],
       "recommended": true,
-      "description": "负责验证裁决、根因分类和 validation-report 落盘。"
+      "description": "负责验证裁决、缺陷分级、根因分类和 validation-report 落盘。"
     }
   ],
   "bundles": [
@@ -105,7 +105,7 @@
     },
     {
       "name": "quick-sdd-design",
-      "description": "需求和技术设计组合，适合只做 proposal、stories 和 tasks 规划。",
+      "description": "需求和技术设计组合，适合系统完成需求切片、架构边界与 tasks 规划。",
       "skills": [
         "quick-sdd-ra",
         "quick-sdd-ta"
@@ -113,7 +113,7 @@
     },
     {
       "name": "quick-sdd-execution",
-      "description": "执行和验证组合，适合只做实现和 QA 验证。",
+      "description": "执行和验证组合，适合按工程实践完成实现、证据收集和 QA 裁决。",
       "skills": [
         "quick-sdd-dev",
         "quick-sdd-qa"

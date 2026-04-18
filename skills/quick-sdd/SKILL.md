@@ -50,6 +50,7 @@ codespec/
 当任务已经被收敛到单一角色时，优先直接使用对应角色 skill，而不是继续把角色协议放在当前 skill 的内部资源里。
 如果目标是“给一个已有项目补齐 quick-sdd 文档基线，并把当前功能和架构反向沉淀成 SDD 产物”，优先切换到 `../quick-sdd-bootstrap-existing/SKILL.md`。
 如果用户直接把一个完整需求交给 `quick-sdd` 或 `quick-sdd-pm`，标准动作是“初始化/续跑 -> 选定当前阶段 -> 派发下一角色 -> 停在派发结果”，而不是一口气产出后续全部角色产物。
+这些角色 skill 现在不仅承载流程分工，也各自内置需求澄清、架构拆解、工程验证、质量门禁等专业实践；共用原则沉淀在 `references/role-capability-playbook.md`。
 
 ## 角色分工
 

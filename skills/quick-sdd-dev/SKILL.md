@@ -19,6 +19,7 @@ description: 作为 Quick SDD 的开发实现 skill 使用，负责在单个 tas
 - 当前 feature 的 `stories.md`
 - 当前 feature 的 `tasks.md`
 - 当前 task 授权的代码路径
+- 如需共享角色方法，补读 `skills/quick-sdd/references/role-capability-playbook.md`
 
 ## 何时使用
 
@@ -58,6 +59,11 @@ description: 作为 Quick SDD 的开发实现 skill 使用，负责在单个 tas
 - 证据优先：没有证据，不报“已完成”
 - 作用域优先：不要因为“顺手”修改其他 story 的代码
 - 验证不只看 happy path，也看边界、错误处理和回归风险
+- 优先采用 TDD 思维：先明确测试与验证，再进入实现
+- 完成后尽量走完 verification loop：build、type、lint、tests、security、diff review
+- 实现前若缺少关键上下文、接口契约或验收依据，应先停下来回流，不要边写边猜
+- 代码以可读性、简单性和清晰命名优先，避免过度设计和隐性副作用
+- 在任务边界内主动补齐输入校验、错误处理和边界条件，而不是只跑通 happy path
 
 ## 交付给 QA 的最小证据
 
@@ -98,3 +104,4 @@ next_action:
 - 不要顺手修 unrelated code
 - 不要替 QA 下最终验收结论
 - 不要在没跑 verify 的情况下声称“任务完成”
+- 不要在未读完 story/task/契约之前直接开始改代码

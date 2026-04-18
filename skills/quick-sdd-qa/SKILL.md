@@ -19,6 +19,7 @@ description: 作为 Quick SDD 的验证 skill 使用，负责基于 story、task
 - 当前 feature 的 `tasks.md`
 - 当前 story 涉及的代码变更和验证证据
 - 已存在的 `validation-report.md`
+- 如需共享角色方法，补读 `skills/quick-sdd/references/role-capability-playbook.md`
 
 ## 何时使用
 
@@ -50,6 +51,11 @@ description: 作为 Quick SDD 的验证 skill 使用，负责基于 story、task
 - 问题要分级，不要把所有问题都写成阻塞
 - 反馈要具体可执行，能指出是回流 `dev`、`ta`、`ra` 还是先回到 `pm`
 - 对 `conditional_pass`，必须写清剩余风险和接受条件
+- 在实现前就应关注 readiness 和测试计划，而不是等提交后才临时想怎么验
+- 验收时同时检查行为、证据、架构一致性、安全与残余风险，不只看测试是否跑通
+- 可按可行性、完整性、风险、资源四个维度组织审议，避免纯主观评论
+- `fail / conditional_pass` 时必须把问题归类到 `implementation / task_boundary / requirement_gap / evidence_gap / risk_acceptance` 等结构化类型
+- 报告目标是支撑 PM 续跑，因此 verdict、证据、风险、回流动作都要写得可操作
 
 ## 缺陷分级
 
@@ -122,3 +128,4 @@ next_action:
 - 不要重写 `proposal.md`、`stories.md` 或 `tasks.md`
 - 不要在证据不足时给 `pass`
 - 不要把纯风格意见写成阻塞缺陷
+- 不要只给结论不给证据和回流建议
