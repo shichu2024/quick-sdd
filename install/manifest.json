@@ -12,7 +12,7 @@
       "standalone": true,
       "depends_on": [],
       "recommended": true,
-      "description": "初始化、续跑和治理轻量级 SDD 工作区。"
+      "description": "初始化、续跑和治理轻量级 SDD 工作区，并把工作派发给下一角色。"
     },
     {
       "name": "quick-sdd-pm",
@@ -23,7 +23,7 @@
         "quick-sdd"
       ],
       "recommended": true,
-      "description": "负责路由、状态推进和 QA 裁决回流。"
+      "description": "负责路由、状态推进和 QA 裁决回流，不直接代替其他角色执行需求。"
     },
     {
       "name": "quick-sdd-bootstrap-existing",
@@ -89,7 +89,7 @@
     },
     {
       "name": "quick-sdd-runtime",
-      "description": "最小运行时与路由组合，适合只做初始化、续跑和派发。",
+      "description": "最小运行时与路由组合，适合只做初始化、续跑和派发，不负责直接产出其他角色主产物。",
       "skills": [
         "quick-sdd",
         "quick-sdd-pm"

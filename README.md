@@ -20,8 +20,8 @@
 
 | Skill | 作用 | 是否可单独安装 |
 | --- | --- | --- |
-| `quick-sdd` | 初始化 `codespec/`、续跑工作区、驱动主流程和 runtime 脚本 | 是 |
-| `quick-sdd-pm` | 路由、派发、续跑、状态推进、吸收 QA 裁决 | 需要同时安装 `quick-sdd` |
+| `quick-sdd` | 初始化 `codespec/`、续跑工作区、驱动主流程和 runtime 脚本，不跨角色包办整条需求 | 是 |
+| `quick-sdd-pm` | 路由、派发、续跑、状态推进、吸收 QA 裁决，不代替其他角色执行需求 | 需要同时安装 `quick-sdd` |
 | `quick-sdd-bootstrap-existing` | 初始化已有项目、盘点功能与架构、反向生成 baseline SDD 文档 | 需要同时安装 `quick-sdd` |
 | `quick-sdd-ra` | 需求分析、范围收敛、`proposal / stories` 生成 | 是 |
 | `quick-sdd-ta` | `tasks` 拆解、依赖设计、ACL 规划、`verify` 设计 | 是 |
@@ -32,6 +32,7 @@
 
 - `quick-sdd-pm` 会调用 `quick-sdd` 中的 runtime 脚本，所以不建议单独安装。
 - 推荐默认安装整组 bundle，而不是只装 `pm`。
+- 即使用户直接把完整需求交给 `quick-sdd` 或 `quick-sdd-pm`，预期行为也应是“初始化或续跑 + 派发下一角色”，而不是跨角色把 `proposal / tasks / code / validation-report` 一次做完。
 
 ## 发布约定
 
@@ -203,3 +204,4 @@ python scripts/list_install_targets.py --bundle quick-sdd-existing-project --rep
 4. 当 QA 更新 `validation-report.md` 后，先运行 `sync_validation_snapshot.py` 同步 `latest_validation`
 5. 再运行 `resume_orchestrator.py` 生成下一跳建议
 6. 最后运行 `resolve_dispatch.py` 为目标角色展开最小读写范围
+7. `quick-sdd` 与 `quick-sdd-pm` 在完成初始化、状态推进和派发后就应停止，由下一角色继续，不要把整条链路在一个入口里包办

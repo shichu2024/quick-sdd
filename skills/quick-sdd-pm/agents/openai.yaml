@@ -1,4 +1,4 @@
 interface:
   display_name: "Quick SDD PM"
-  short_description: "负责 Quick SDD 的路由、续跑、派发与运行态推进"
-  default_prompt: "使用 $quick-sdd-pm 继续当前 codespec 工作区，并给出下一步角色派发建议。"
+  short_description: "只负责 Quick SDD 的路由、续跑、派发与运行态推进"
+  default_prompt: "使用 $quick-sdd-pm 接管当前项目的 SDD 流程，只完成初始化或续跑、状态推进和下一角色派发，不代替其他角色执行需求。"
