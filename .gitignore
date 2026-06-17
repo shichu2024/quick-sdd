@@ -1,4 +1,44 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.egg-info/
+venv/
+.venv/
+
+# AI tools
+.kimi/
+.gemini/
+.claude/
+.codex/
+.cat-cafe/
+KIMI.md
+AGENTS.md
+BACKLOG.md
+CLAUDE.md
+GEMINI.md
+docs/SOP.md
+docs/decisions/.gitkeep
+docs/discussions/.gitkeep
+docs/features/.gitkeep
+docs/features/TEMPLATE.md
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Distribution
+dist/
+build/
+*.egg
