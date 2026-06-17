@@ -1,6 +1,9 @@
 ---
 name: quick-sdd-pm
-description: 作为 Quick SDD 的项目管理与路由 skill 使用，负责初始化或续跑 codespec 工作区、选择 active feature 与 active task、调用续跑和权限展开脚本、更新 runtime/state.json，并吸收 QA 的验证裁决与回流建议。当需要做 SDD 编排、状态推进、阻塞处理或角色派发时使用。即使用户直接给出完整需求，pm 也只负责接单、路由、门禁和交接，不代替 ra / ta / dev / qa 完成主产物。
+description: >
+  Use when Quick SDD 需要初始化或续跑 codespec、推进阶段、派发角色、同步 QA 裁决或处理阻塞。
+  Not for 代替 RA/TA/DEV/QA 编写 proposal、acceptance、stories、architecture、tasks、代码或 validation-report。
+  Output: 更新后的 runtime/state.json、最小交接包、下一角色和下一动作。
 ---
 
 # Quick SDD PM
@@ -17,10 +20,10 @@ description: 作为 Quick SDD 的项目管理与路由 skill 使用，负责初�
 
 ## 先读
 
-- `AGENT.md`
+- `AGENTS.md`
 - `codespec/README.md`
 - `codespec/runtime/state.json`
-- 必要时读取目标 feature 的 `proposal.md`、`stories.md`、`tasks.md`、`validation-report.md`
+- 必要时读取目标 feature 的 `proposal.md`、`stories.md`、`architecture.md`、`tasks.md`、`validation-report.md`、`acceptance.md`
 - 如需共享角色方法，补读 `skills/quick-sdd/references/role-capability-playbook.md`
 
 ## 安装依赖
@@ -52,7 +55,7 @@ description: 作为 Quick SDD 的项目管理与路由 skill 使用，负责初�
 1. 当前是 `init / continue / repair / validate / redirect` 哪一种
 2. 当前工作区是否已有 `codespec/`
 3. 当前 `active_feature / active_dispatch / latest_validation` 是否对齐
-4. 下一棒应该是谁，而不是“我能不能顺手做完”
+4. 下一棒应该是谁：RA 写 proposal，TA 写 stories/architecture，DEV 写 tasks/实现，TA 审 tasks，QA 审全部文档，RA 做最终验收
 5. 本轮是否需要同步 QA 快照
 
 ## 工作步骤
@@ -103,6 +106,7 @@ return_to:
 - `state.json` 已与当前阶段对齐
 - 下一角色和下一动作明确
 - 如有 QA 裁决，已吸收进恢复路径
+- 如 QA 通过，已派发给 RA 做最终需求验收，而不是直接 done
 - 没有越权替其他角色做主产物
 
 ## 输出格式

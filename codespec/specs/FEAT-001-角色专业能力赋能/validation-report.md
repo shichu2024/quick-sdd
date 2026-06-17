@@ -5,7 +5,7 @@
 - 功能 ID：FEAT-001
 - 当前轮次状态（status）：`DONE`
 - 总体裁决（decision）：`pass`
-- 总体建议回流角色（reroute_to）：`pm`
+- 总体建议回流角色（reroute_to）：`ra`
 - 总体摘要（summary）：
   - 已完成 `claude` 顶层 agent 项目研究、quick-sdd 五角角色能力矩阵、赋能设计、角色 skill/agent 增强、共享 playbook 以及 README/manifest 收口。
 - 已验证故事：
@@ -16,15 +16,17 @@
   - `ST-005`
 - 未解决问题：
   - 无阻塞问题。
+- 说明：
+  - QA 裁决是 RA 最终验收的输入；最终需求验收结论记录在 `acceptance.md`。
 
 ## ST-001
 
 - 当前轮次状态（status）：`DONE`
 - 验证裁决（decision）：`pass`
 - 根因分类（root_cause_type）：`none`
-- 建议回流角色（reroute_to）：`pm`
+- 建议回流角色（reroute_to）：`ra`
 - 建议回流动作（reroute_action）：
-  - 无需回流，研究基线可直接作为后续角色赋能输入。
+  - 无需修复回流，研究基线可作为 RA 最终验收输入。
 - 摘要（summary）：
   - 已完成 `claude` 六个顶层项目盘点、去重策略和研究顺序定义。
 - 已检查验收标准：
@@ -42,9 +44,9 @@
 - 当前轮次状态（status）：`DONE`
 - 验证裁决（decision）：`pass`
 - 根因分类（root_cause_type）：`none`
-- 建议回流角色（reroute_to）：`pm`
+- 建议回流角色（reroute_to）：`ra`
 - 建议回流动作（reroute_action）：
-  - 无需回流，能力矩阵可直接作为设计输入。
+  - 无需修复回流，能力矩阵可作为 RA 最终验收输入。
 - 摘要（summary）：
   - 已形成覆盖 `PM / RA / TA / DEV / QA` 的角色能力矩阵，并标明来源与反模式。
 - 已检查验收标准：
@@ -62,9 +64,9 @@
 - 当前轮次状态（status）：`DONE`
 - 验证裁决（decision）：`pass`
 - 根因分类（root_cause_type）：`none`
-- 建议回流角色（reroute_to）：`pm`
+- 建议回流角色（reroute_to）：`ra`
 - 建议回流动作（reroute_action）：
-  - 无需回流，映射方案已可指导后续维护。
+  - 无需修复回流，映射方案可作为 RA 最终验收输入。
 - 摘要（summary）：
   - 已完成 quick-sdd 现状缺口审计，并明确共享参考层、角色 skill 和 agent manifest 的分层方案。
 - 已检查验收标准：
@@ -82,9 +84,9 @@
 - 当前轮次状态（status）：`DONE`
 - 验证裁决（decision）：`pass`
 - 根因分类（root_cause_type）：`none`
-- 建议回流角色（reroute_to）：`pm`
+- 建议回流角色（reroute_to）：`ra`
 - 建议回流动作（reroute_action）：
-  - 无需回流，角色增强已落盘。
+  - 无需修复回流，角色增强可作为 RA 最终验收输入。
 - 摘要（summary）：
   - 已完成五个角色 skill 的专业实践增强，并新增共享 `role-capability-playbook.md` 作为复用层。
 - 已检查验收标准：
@@ -108,9 +110,9 @@
 - 当前轮次状态（status）：`DONE`
 - 验证裁决（decision）：`pass`
 - 根因分类（root_cause_type）：`none`
-- 建议回流角色（reroute_to）：`pm`
+- 建议回流角色（reroute_to）：`ra`
 - 建议回流动作（reroute_action）：
-  - 无需回流，feature 可收口。
+  - 无需修复回流，交由 RA 对照原始需求、全链路文档和 QA 证据完成最终验收。
 - 摘要（summary）：
   - 已完成 README 与安装清单收口，并通过一致性检查确认角色增强结果可被仓库入口层正确表达。
 - 已检查验收标准：
@@ -134,8 +136,8 @@
 
 | 故事 | 验收标准 | 任务 | 验证裁决（decision） | 根因分类 | 建议回流角色 |
 |------|------------|-------|--------------------|----------|----------------|
-| `ST-001` | 顶层项目研究基线、去重策略、研究顺序 | `T-001, T-002` | `pass` | `none` | `pm` |
-| `ST-002` | 角色能力矩阵完整，覆盖五角角色与来源追踪 | `T-003, T-004, T-005` | `pass` | `none` | `pm` |
-| `ST-003` | 现状缺口审计与分层映射方案完成 | `T-006, T-007` | `pass` | `none` | `pm` |
-| `ST-004` | 角色 skill / agent 增强与共享参考层落地 | `T-008, T-009, T-010, T-011, T-012` | `pass` | `none` | `pm` |
-| `ST-005` | 说明文档、安装清单与最终一致性检查完成 | `T-013, T-014` | `pass` | `none` | `pm` |
+| `ST-001` | 顶层项目研究基线、去重策略、研究顺序 | `T-001, T-002` | `pass` | `none` | `ra` |
+| `ST-002` | 角色能力矩阵完整，覆盖五角角色与来源追踪 | `T-003, T-004, T-005` | `pass` | `none` | `ra` |
+| `ST-003` | 现状缺口审计与分层映射方案完成 | `T-006, T-007` | `pass` | `none` | `ra` |
+| `ST-004` | 角色 skill / agent 增强与共享参考层落地 | `T-008, T-009, T-010, T-011, T-012` | `pass` | `none` | `ra` |
+| `ST-005` | 说明文档、安装清单与最终一致性检查完成 | `T-013, T-014` | `pass` | `none` | `ra` |

@@ -7,7 +7,7 @@
 - 提供主编排 skill：`quick-sdd`
 - 提供 1 个存量项目接入 skill：`quick-sdd-bootstrap-existing`
 - 提供 5 个独立可发现的角色 skill：`quick-sdd-pm / quick-sdd-ra / quick-sdd-ta / quick-sdd-dev / quick-sdd-qa`
-- 提供运行时脚本、模板和参考规约，用于初始化、续跑、权限展开、QA 回流与角色能力复用
+- 提供运行时脚本、模板和参考规约，用于初始化、续跑、架构设计、权限展开、QA 回流、RA 最终验收与角色能力复用
 
 ## 仓库定位
 
@@ -24,26 +24,26 @@
 | `quick-sdd` | 初始化 `codespec/`、续跑工作区、驱动主流程和 runtime 脚本，不跨角色包办整条需求 | 是 |
 | `quick-sdd-pm` | 路由、派发、续跑、状态推进、门禁判断与 QA 回流，不代替其他角色执行需求 | 需要同时安装 `quick-sdd` |
 | `quick-sdd-bootstrap-existing` | 初始化已有项目、盘点功能与架构、反向生成 baseline SDD 文档 | 需要同时安装 `quick-sdd` |
-| `quick-sdd-ra` | 需求澄清、价值切片、范围收敛、`proposal / stories` 生成 | 是 |
-| `quick-sdd-ta` | `tasks` 拆解、架构边界、依赖设计、ACL 规划、`verify` 设计 | 是 |
-| `quick-sdd-dev` | 单 task 实现、TDD/验证循环、`verify` 执行、证据回收 | 是 |
-| `quick-sdd-qa` | 验收裁决、缺陷分级、回流建议、`validation-report` 维护 | 是 |
+| `quick-sdd-ra` | 需求澄清、范围收敛、`proposal.md` 生成与 `acceptance.md` 最终验收 | 是 |
+| `quick-sdd-ta` | `stories.md`、`architecture.md`、架构边界与 DEV task 审计 | 是 |
+| `quick-sdd-dev` | `tasks.md` 编写、单 task 实现、TDD/验证循环、证据回收 | 是 |
+| `quick-sdd-qa` | 全链路文档审计、质量裁决、缺陷分级、`validation-report` 维护 | 是 |
 
 说明：
 
 - `quick-sdd-pm` 会调用 `quick-sdd` 中的 runtime 脚本，所以不建议单独安装。
 - 推荐默认安装整组 bundle，而不是只装 `pm`。
-- 即使用户直接把完整需求交给 `quick-sdd` 或 `quick-sdd-pm`，预期行为也应是“初始化或续跑 + 派发下一角色”，而不是跨角色把 `proposal / tasks / code / validation-report` 一次做完。
+- 即使用户直接把完整需求交给 `quick-sdd` 或 `quick-sdd-pm`，预期行为也应是“初始化或续跑 + 派发下一角色”，而不是跨角色把 `proposal / stories / architecture / tasks / code / validation-report / acceptance` 一次做完。
 
 ## 角色专业能力增强
 
 这套角色 skill 现在不再只是“流程占位符”，而是“流程协议 + 专业实践”双层结构：
 
 - `PM`：强调编排治理、去噪重述、门禁判断、阻塞恢复和派发收口。
-- `RA`：强调需求澄清、用户价值切片、story readiness 和 traceability。
-- `TA`：强调架构边界、ownership、浅依赖拆解、接口契约和验证设计。
-- `DEV`：强调 task 边界内实现、TDD 思维、verification loop、证据优先和回归风险控制。
-- `QA`：强调 readiness 检查、证据驱动裁决、缺陷分级、根因分类和回流建议。
+- `RA`：强调需求澄清、范围收敛、proposal readiness、风险暴露和 QA 后的最终需求验收。
+- `TA`：强调用户价值切片、验收标准、架构边界、接口契约和 DEV task 审计。
+- `DEV`：强调 task 文档编写、task 边界内实现、TDD 思维、verification loop、证据优先和回归风险控制。
+- `QA`：强调全链路文档审计、证据驱动质量裁决、缺陷分级、根因分类和回流建议；不替代 RA 做最终需求验收。
 - 共享方法沉淀在 `skills/quick-sdd/references/role-capability-playbook.md`，用于减少五个角色之间的重复说明。
 
 ## 发布约定
@@ -183,14 +183,16 @@ python scripts/list_install_targets.py --bundle quick-sdd-existing-project --rep
 
 `quick-sdd` 负责编排这条主链路：
 
-`pm -> ra -> ta -> dev -> qa`
+`pm -> ra -> ta -> dev -> ta -> qa -> ra`
 
 初始化后生成的项目级 `codespec/` 会集中管理以下产物：
 
 - `proposal.md`
 - `stories.md`
+- `architecture.md`
 - `tasks.md`
 - `validation-report.md`
+- `acceptance.md`
 - `runtime/role-policy.yaml`
 - `runtime/tools.yaml`
 - `runtime/state.json`
@@ -200,7 +202,7 @@ python scripts/list_install_targets.py --bundle quick-sdd-existing-project --rep
 主 skill 内置 4 个关键脚本原型：
 
 - `init_codespec.py`
-  - 初始化 `AGENT.md`、`codespec/` 和 feature 骨架
+  - 初始化 `AGENTS.md`、`codespec/` 和 feature 骨架
 - `sync_validation_snapshot.py`
   - 把 `validation-report.md` 中最近一次 QA 裁决标准化同步到 `state.json.latest_validation`
 - `resume_orchestrator.py`
@@ -216,4 +218,5 @@ python scripts/list_install_targets.py --bundle quick-sdd-existing-project --rep
 4. 当 QA 更新 `validation-report.md` 后，先运行 `sync_validation_snapshot.py` 同步 `latest_validation`
 5. 再运行 `resume_orchestrator.py` 生成下一跳建议
 6. 最后运行 `resolve_dispatch.py` 为目标角色展开最小读写范围
-7. `quick-sdd` 与 `quick-sdd-pm` 在完成初始化、状态推进和派发后就应停止，由下一角色继续，不要把整条链路在一个入口里包办
+7. QA 通过或有条件通过后，由 RA 更新 `acceptance.md`，决定接受最终结果还是回流修复
+8. `quick-sdd` 与 `quick-sdd-pm` 在完成初始化、状态推进和派发后就应停止，由下一角色继续，不要把整条链路在一个入口里包办

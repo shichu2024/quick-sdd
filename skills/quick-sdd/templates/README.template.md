@@ -13,17 +13,19 @@
 
 - `Feature`：一个自包含的产品能力，存放在 `codespec/specs/<feature>/` 下
 - `Story`：带有明确验收标准的用户价值切片
+- `Architecture`：TA 维护的架构设计、技术边界和关键决策记录
 - `Task`：用于路由、归属和执行的工程单元
 - `Validation`：对一个或多个 story 的验证结果
+- `Acceptance`：RA 对整个需求和最终结果的最终验收决定
 - `Traceability`：story、验收标准、task 与验证结果之间的映射关系
 - `ACL`：角色或 task 允许读取与写入的路径范围
 
 ## 流程
 
-- `pm -> ra -> ta -> dev -> qa`
+- `pm -> ra -> ta -> dev -> ta -> qa -> ra`
 - 共享存储，隔离角色上下文
 - `pm` 负责路由与运行时状态
-- 项目根目录 `AGENT.md` 负责协作约束，`codespec/` 负责规格与状态
+- 项目根目录 `AGENTS.md` 负责协作约束，`codespec/` 负责规格与状态
 
 ## Feature 索引
 
@@ -36,10 +38,13 @@
 ### Feature 状态
 
 - `proposal`：正在定义问题和范围
-- `stories`：正在定义用户价值切片和验收标准
-- `planning`：正在准备 task 和执行边界
+- `stories`：TA 正在定义用户价值切片和验收标准
+- `architecture`：TA 正在补齐架构设计、技术边界和关键决策
+- `planning`：DEV 正在编写 task 文档、ACL、依赖和验证方式
+- `task_review`：TA 正在审计 DEV 的 task 文档
 - `implementing`：一个或多个 task 正在执行
-- `validating`：QA 正在验证结果
+- `validating`：QA 正在审计全部文档和验证结果
+- `accepting`：RA 正在对整个需求和最终结果做最终验收
 - `done`：feature 已验收完成
 - `blocked`：feature 受依赖或决策阻塞
 
@@ -51,10 +56,14 @@
 
 - `idle -> proposal` 表示开始一个新 feature
 - `idle -> implementing / validating` 表示恢复已有流程
-- `proposal -> stories -> planning -> implementing -> validating -> done`
+- `proposal -> stories -> architecture -> planning -> task_review -> implementing -> validating -> accepting -> done`
 - 任意活动状态都可以进入 `blocked`
 - `blocked` 解除后回到阻塞前状态
-- `validating -> implementing` 表示验证失败或按需返工
+- `validating -> implementing` 表示验证失败且根因为实现问题
+- `validating -> task_review` 表示验证失败且根因为 task 边界、依赖、ACL 或 verify 问题
+- `validating -> architecture` 表示验证失败且根因为架构设计或接口契约缺口
+- `validating -> accepting` 表示 QA 通过或有条件通过后交给 RA 做最终需求验收
+- `accepting -> done` 表示 RA 接受最终结果
 
 ## ID 规则
 

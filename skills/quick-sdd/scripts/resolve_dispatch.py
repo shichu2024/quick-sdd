@@ -341,6 +341,9 @@ class ResolverEngine:
 
     def execute_definition(self, definition: dict[str, Any], resolving: set[str]) -> Any:
         kind = definition.get("kind")
+        optional = bool(definition.get("optional", False))
+        field = str(definition.get("field", "")).strip()
+        optional_empty: Any = [] if field in {"read_paths", "write_paths"} else ""
         if kind == "state_field":
             path = str(definition.get("path", "")).strip()
             if not path:
@@ -350,31 +353,48 @@ class ResolverEngine:
         if kind == "task_field":
             feature_id = str(self.resolve_ref_field(definition, "feature_ref", resolving))
             task_id = str(self.resolve_ref_field(definition, "task_ref", resolving))
-            field = str(definition.get("field", "")).strip()
             if not feature_id:
+                if optional:
+                    return optional_empty
                 raise ResolutionError("missing_active_feature", "task_field requires active feature")
             if not task_id:
+                if optional:
+                    return optional_empty
                 raise ResolutionError("missing_active_task", "task_field requires active task")
             tasks_by_id, _ = self.load_feature_tasks(feature_id)
             if task_id not in tasks_by_id:
+                if optional:
+                    return optional_empty
                 raise ResolutionError("missing_task", task_id)
             task = tasks_by_id[task_id]
             if field not in task:
+                if optional:
+                    return optional_empty
                 raise ResolutionError(f"task_field_missing:{field}", task_id)
             return task[field]
         if kind == "story_task_union":
             feature_id = str(self.resolve_ref_field(definition, "feature_ref", resolving))
             story_id = str(self.resolve_ref_field(definition, "story_ref", resolving))
-            field = str(definition.get("field", "")).strip()
             if not feature_id:
+                if optional:
+                    return []
                 raise ResolutionError("missing_active_feature", "story_task_union requires active feature")
             if not story_id:
+                if optional:
+                    return []
                 raise ResolutionError("missing_active_story", "story_task_union requires active story")
-            _, tasks_by_story = self.load_feature_tasks(feature_id)
+            try:
+                _, tasks_by_story = self.load_feature_tasks(feature_id)
+            except ResolutionError:
+                if optional:
+                    return []
+                raise
             tasks = tasks_by_story.get(story_id, [])
             values: list[str] = []
             for task in tasks:
                 if field not in task:
+                    if optional:
+                        continue
                     raise ResolutionError(f"task_field_missing:{field}", story_id)
                 current = task[field]
                 if isinstance(current, list):
@@ -435,13 +455,13 @@ class ResolverEngine:
         preferred_resume_mode = ""
         if usable:
             if decision == "fail":
-                preferred_next_role = "dev"
+                preferred_next_role = reroute_to or "dev"
                 preferred_resume_mode = "repair"
             elif decision == "conditional_pass":
-                preferred_next_role = "pm"
+                preferred_next_role = "ra"
                 preferred_resume_mode = "validate"
             elif decision == "pass":
-                preferred_next_role = "pm"
+                preferred_next_role = "ra"
                 preferred_resume_mode = "continue"
         return {
             "usable": usable,

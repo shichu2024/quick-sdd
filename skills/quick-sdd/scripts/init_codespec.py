@@ -156,12 +156,16 @@ class CodeSpecInitializer:
         self.runtime_dir.mkdir(parents=True, exist_ok=True)
         self.specs_dir.mkdir(parents=True, exist_ok=True)
 
-        agent_path = self.repo_root / "AGENT.md"
-        if not agent_path.exists():
-            write_text(agent_path, self.template("agent.template.md"))
-            self.summary.created.append(str(agent_path))
-        else:
+        agent_path = self.repo_root / "AGENTS.md"
+        legacy_agent_path = self.repo_root / "AGENT.md"
+        if agent_path.exists():
             self.summary.skipped.append(str(agent_path))
+        elif legacy_agent_path.exists():
+            legacy_agent_path.replace(agent_path)
+            self.summary.updated.append(f"{legacy_agent_path} -> {agent_path}")
+        else:
+            write_text(agent_path, self.template("agents.template.md"))
+            self.summary.created.append(str(agent_path))
 
         readme_path = self.codespec_dir / "README.md"
         if not readme_path.exists():
@@ -254,6 +258,10 @@ class CodeSpecInitializer:
         stories_content = stories_content.replace("priority: P1", f"priority: {priority}")
         write_text(stories_path, stories_content)
 
+        architecture_path = feature_path / "architecture.md"
+        architecture_content = render_template(self.template("architecture.template.md"), values)
+        write_text(architecture_path, architecture_content)
+
         tasks_path = feature_path / "tasks.md"
         tasks_content = render_template(self.template("task.template.md"), values)
         write_text(tasks_path, tasks_content)
@@ -262,12 +270,18 @@ class CodeSpecInitializer:
         validation_content = render_template(self.template("validation-report.template.md"), values)
         write_text(validation_path, validation_content)
 
+        acceptance_path = feature_path / "acceptance.md"
+        acceptance_content = render_template(self.template("acceptance.template.md"), values)
+        write_text(acceptance_path, acceptance_content)
+
         self.summary.created.extend(
             [
                 str(proposal_path),
                 str(stories_path),
+                str(architecture_path),
                 str(tasks_path),
                 str(validation_path),
+                str(acceptance_path),
             ]
         )
         self.summary.feature_id = feature_id
@@ -306,7 +320,7 @@ class CodeSpecInitializer:
         state["resume"] = {
             "mode": "init",
             "next_role": "ra",
-            "next_action": "完善 proposal.md 并补全 stories.md",
+            "next_action": "完善 proposal.md，完成后交给 ta 编写 stories.md 与 architecture.md",
         }
         state["blocked"] = []
         state["last_updated"] = self.timestamp

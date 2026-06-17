@@ -1,4 +1,4 @@
 interface:
   display_name: "Quick SDD QA"
-  short_description: "负责 Quick SDD 的 readiness/验收裁决、缺陷回流与验证报告"
-  default_prompt: "使用 $quick-sdd-qa 基于当前 story、验收标准和证据给出验证裁决，并更新 validation-report。"
+  short_description: "负责 Quick SDD 的全链路文档审计、质量裁决与验证报告"
+  default_prompt: "使用 $quick-sdd-qa 审计 proposal、stories、architecture、tasks 与验证证据，给出质量裁决并更新 validation-report；最终需求验收交给 RA。"

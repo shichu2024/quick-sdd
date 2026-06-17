@@ -27,6 +27,10 @@ FIELD_LABEL_ALIASES = {
     "reroute_action": ["reroute_action", "回流动作"],
     "summary": ["summary", "摘要"],
 }
+DEFAULT_REROUTE_BY_DECISION = {
+    "pass": "ra",
+    "conditional_pass": "ra",
+}
 
 
 def normalize_scalar(value: Any) -> str:
@@ -209,8 +213,11 @@ def build_validation_summary(story_id: str, snapshot: dict[str, str]) -> str:
         parts.append(f"{story_id} 当前轮次状态为 {status}")
     if root_cause_type and decision in {"fail", "conditional_pass"}:
         parts.append(f"根因为 {root_cause_type}")
-    if reroute_to and decision in {"fail", "conditional_pass"}:
-        parts.append(f"建议回流给 {reroute_to}")
+    if reroute_to:
+        if decision in {"pass", "conditional_pass"} and reroute_to == "ra":
+            parts.append("建议交给 RA 做最终需求验收")
+        else:
+            parts.append(f"建议回流给 {reroute_to}")
     return "；".join(parts)
 
 
@@ -233,6 +240,12 @@ def build_validation_snapshot(
     if not decision:
         raise ResolutionError("missing_validation_decision", story_id)
     active_dispatch = state.get("active_dispatch", {}) or {}
+    parsed_reroute_to = normalize_scalar(parsed.get("reroute_to", ""))
+    parsed_reroute_action = normalize_scalar(parsed.get("reroute_action", ""))
+    if not parsed_reroute_to:
+        parsed_reroute_to = DEFAULT_REROUTE_BY_DECISION.get(decision, "")
+    if not parsed_reroute_action and decision in {"pass", "conditional_pass"}:
+        parsed_reroute_action = "交由 RA 对照 proposal、全链路文档和 QA 证据完成 acceptance.md 最终需求验收"
     snapshot = {
         "story": story_id,
         "task": normalize_scalar(
@@ -243,8 +256,8 @@ def build_validation_snapshot(
         "status": normalize_scalar(parsed.get("status", "")),
         "decision": decision,
         "root_cause_type": normalize_scalar(parsed.get("root_cause_type", "")),
-        "reroute_to": normalize_scalar(parsed.get("reroute_to", "")),
-        "reroute_action": normalize_scalar(parsed.get("reroute_action", "")),
+        "reroute_to": parsed_reroute_to,
+        "reroute_action": parsed_reroute_action,
         "summary": "",
         "report_ref": build_report_ref(repo_root, resolved_path, story_id),
         "updated_at": normalize_scalar(updated_at) or file_time_iso(resolved_path),
@@ -260,6 +273,10 @@ def routing_requires_report_fallback(routing: dict[str, str]) -> bool:
     decision = normalize_scalar(routing.get("decision", ""))
     if decision in {"fail", "conditional_pass"}:
         for key in ("root_cause_type", "reroute_to", "reroute_action"):
+            if not normalize_scalar(routing.get(key, "")):
+                return True
+    if decision == "pass":
+        for key in ("reroute_to", "reroute_action"):
             if not normalize_scalar(routing.get(key, "")):
                 return True
     return False

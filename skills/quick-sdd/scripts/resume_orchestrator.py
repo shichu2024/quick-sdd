@@ -100,10 +100,10 @@ def latest_validation_hint(state: dict[str, Any], validation_routing: dict[str, 
             preferred_next_role = reroute_to or "dev"
             preferred_resume_mode = "repair"
         elif decision == "conditional_pass":
-            preferred_next_role = "pm"
+            preferred_next_role = "ra"
             preferred_resume_mode = "validate"
         elif decision == "pass":
-            preferred_next_role = "pm"
+            preferred_next_role = "ra"
             preferred_resume_mode = "continue"
     return {
         "usable": usable,
@@ -199,20 +199,29 @@ def fail_recommendation_from_hint(active_story: str, active_task: str, hint: dic
     reroute_action = normalize_scalar(hint.get("reroute_action", ""))
     root_cause_type = normalize_scalar(hint.get("root_cause_type", ""))
     if reroute_to == "ta":
+        if root_cause_type == "architecture_gap":
+            return {
+                "phase": "architecture",
+                "resume_mode": "repair",
+                "next_role": "ta",
+                "next_action": reroute_action or "根据 QA 根因修订 architecture.md、接口契约或关键设计决策。",
+                "dispatch": {"role": "ta", "story": active_story, "task": ""},
+                "reason": "latest_validation 为 fail，且根因属于 architecture_gap，改派给 ta 修订架构设计。",
+            }
         return {
-            "phase": "planning",
+            "phase": "task_review",
             "resume_mode": "repair",
             "next_role": "ta",
-            "next_action": reroute_action or "根据 QA 根因重新拆解 task 边界、依赖或访问范围。",
+            "next_action": reroute_action or "根据 QA 根因审计 story、architecture 或 dev 编写的 task 边界。",
             "dispatch": {"role": "ta", "story": active_story, "task": ""},
-            "reason": f"latest_validation 为 fail，且根因属于 {root_cause_type or 'task_boundary'}，改派给 ta。",
+            "reason": f"latest_validation 为 fail，且根因属于 {root_cause_type or 'task_boundary'}，改派给 ta 审计设计或 task。",
         }
     if reroute_to == "ra":
         return {
-            "phase": "stories",
+            "phase": "proposal",
             "resume_mode": "repair",
             "next_role": "ra",
-            "next_action": reroute_action or "根据 QA 根因回看 story、acceptance 或 feature 范围定义。",
+            "next_action": reroute_action or "根据 QA 根因回看 proposal 中的问题、目标、范围或风险定义。",
             "dispatch": {"role": "ra", "story": active_story, "task": ""},
             "reason": f"latest_validation 为 fail，且根因属于 {root_cause_type or 'requirement_gap'}，改派给 ra。",
         }
@@ -268,12 +277,12 @@ def recommend_next_step(
                 followup = reroute_action or f"如不接受风险，则回流给 {reroute_to} 继续处理。"
                 extra = f" 如不接受风险，建议回流给 {reroute_to}：{followup}"
             return {
-                "phase": "validating",
+                "phase": "accepting",
                 "resume_mode": "validate",
-                "next_role": "pm",
-                "next_action": "审阅 conditional_pass 的剩余风险，并决定接受风险还是回流修复。" + extra,
-                "dispatch": {"role": "pm", "story": active_story, "task": active_task},
-                "reason": "latest_validation 为 conditional_pass，需要 PM 做接受或回流决策。",
+                "next_role": "ra",
+                "next_action": "基于 QA conditional_pass 审阅剩余风险，更新 acceptance.md，并决定接受风险还是回流修复。" + extra,
+                "dispatch": {"role": "ra", "story": active_story, "task": active_task},
+                "reason": "latest_validation 为 conditional_pass，需要 RA 做最终需求验收和风险接受决策。",
             }
         if hint["decision"] == "pass":
             next_task = find_current_or_next_task(tasks_by_id, "", active_story, exclude_task=active_task)
@@ -295,22 +304,22 @@ def recommend_next_step(
                 return {
                     "phase": "planning",
                     "resume_mode": "continue",
-                    "next_role": "ta",
-                    "next_action": f"为 {unplanned_story.get('id', '')} 生成 tasks.md 中的任务拆解。",
+                    "next_role": "dev",
+                    "next_action": f"为 {unplanned_story.get('id', '')} 编写 tasks.md 中的任务计划、ACL、依赖和 verify。",
                     "dispatch": {
-                        "role": "ta",
+                        "role": "dev",
                         "story": str(unplanned_story.get("id", "") or ""),
                         "task": "",
                     },
-                    "reason": "最近一次验证通过，但仍存在尚未拆解 task 的 story。",
+                    "reason": "最近一次验证通过，但仍存在尚未由 DEV 编写 task 文档的 story。",
                 }
             return {
-                "phase": "done",
+                "phase": "accepting",
                 "resume_mode": "continue",
-                "next_role": "pm",
-                "next_action": "复核验证报告并完成 feature 收尾。",
-                "dispatch": {"role": "pm", "story": active_story, "task": active_task},
-                "reason": "最近一次验证通过，且没有剩余可执行 task。",
+                "next_role": "ra",
+                "next_action": "对照 proposal 和 QA 证据完成最终需求验收，并更新 acceptance.md。",
+                "dispatch": {"role": "ra", "story": active_story, "task": active_task},
+                "reason": "最近一次 QA 验证通过，且没有剩余可执行 task；最终验收由 RA 负责。",
             }
 
     if active_phase in {"idle", ""}:
@@ -335,10 +344,19 @@ def recommend_next_step(
         return {
             "phase": "stories",
             "resume_mode": "continue",
-            "next_role": "ra",
-            "next_action": "补全 stories.md 与 acceptance criteria。",
-            "dispatch": {"role": "ra", "story": active_story, "task": ""},
-            "reason": "当前处于 stories 阶段，应继续完善用户故事。",
+            "next_role": "ta",
+            "next_action": "补全 stories.md、acceptance criteria，并确认是否需要同步 architecture.md。",
+            "dispatch": {"role": "ta", "story": active_story, "task": ""},
+            "reason": "当前处于 stories 阶段，应由 TA 完成用户故事和验收标准。",
+        }
+    if active_phase == "architecture":
+        return {
+            "phase": "architecture",
+            "resume_mode": "continue",
+            "next_role": "ta",
+            "next_action": "完善 architecture.md，明确技术边界、关键决策、接口契约和验证影响。",
+            "dispatch": {"role": "ta", "story": active_story, "task": ""},
+            "reason": "当前处于 architecture 阶段，应由 TA 完成架构设计文档。",
         }
     if active_phase == "planning":
         unplanned_story = find_unplanned_story(stories, tasks_by_id)
@@ -346,10 +364,19 @@ def recommend_next_step(
         return {
             "phase": "planning",
             "resume_mode": "continue",
+            "next_role": "dev",
+            "next_action": "根据 proposal、stories 和 architecture 编写 tasks.md、依赖、ACL 与 verify。",
+            "dispatch": {"role": "dev", "story": story_id, "task": ""},
+            "reason": "当前处于 planning 阶段，应由 DEV 编写任务文档。",
+        }
+    if active_phase == "task_review":
+        return {
+            "phase": "task_review",
+            "resume_mode": "continue",
             "next_role": "ta",
-            "next_action": "根据已确认的 story 更新 tasks.md、依赖和访问范围。",
-            "dispatch": {"role": "ta", "story": story_id, "task": ""},
-            "reason": "当前处于 planning 阶段，应继续由 TA 拆解执行任务。",
+            "next_action": "审计 DEV 编写的 tasks.md，确认 task 边界、ACL、依赖、verify 和架构一致性。",
+            "dispatch": {"role": "ta", "story": active_story, "task": active_task},
+            "reason": "当前处于 task_review 阶段，应由 TA 审计任务文档后再进入实现。",
         }
     if active_phase == "implementing":
         next_task = find_current_or_next_task(tasks_by_id, active_task, active_story)
@@ -384,6 +411,15 @@ def recommend_next_step(
             "next_action": "继续完成当前验证并写回 validation-report.md。",
             "dispatch": {"role": "qa", "story": validation_story, "task": active_task},
             "reason": "当前已处于 validating 阶段，但最新 QA 裁决不足以触发回流或收尾。",
+        }
+    if active_phase == "accepting":
+        return {
+            "phase": "accepting",
+            "resume_mode": "validate",
+            "next_role": "ra",
+            "next_action": "对照 proposal、全链路文档、QA 报告和实现证据完成最终需求验收，并更新 acceptance.md。",
+            "dispatch": {"role": "ra", "story": active_story, "task": active_task},
+            "reason": "当前处于 accepting 阶段，最终验收责任属于 RA。",
         }
     if active_phase == "blocked":
         return {

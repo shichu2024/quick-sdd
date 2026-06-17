@@ -16,8 +16,9 @@
 
 - 修改 `tasks.md`
 - 决定是否切换阶段
-- 决定是否接受 `conditional_pass`
+- 决定是否接受 `conditional_pass` 的剩余风险
 - 替代 PM 做业务路由
+- 替代 RA 做最终需求验收
 
 ## 2. 输入
 
@@ -48,7 +49,7 @@ state_path:
 3. 检查 `target_role` 是否存在于 `roles`
 4. 检查 `mode` 是否为 `read` 或 `write`
 5. 如果目标角色依赖 feature 级 resolver，检查 `active_feature` 是否非空
-6. 如果目标角色依赖 task 级 resolver，检查 `active_dispatch.task` 是否非空
+6. 如果目标角色依赖非 optional 的 task 级 resolver，检查 `active_dispatch.task` 是否非空
 
 如果任一预检查失败：
 
@@ -208,6 +209,7 @@ task_write_paths:
 - `field` 必须存在
 - 对 ACL 类字段，结果必须是字符串列表
 - 空列表允许返回，但调度器应把它视为“当前无此类权限”
+- 如果定义包含 `optional: true`，则缺少 active task、task 文件或目标字段时返回空列表，而不是 `BLOCKED`
 
 ### 6.3 `story_task_union`
 
@@ -237,6 +239,7 @@ story_task_write_paths:
 - 先检查 `active_task`
 - 如果 `active_task` 存在，则从该 task 的 `story_id` 回填 `active_story`
 - 如果仍然拿不到 story，则返回 `BLOCKED`
+- 如果定义包含 `optional: true`，则缺少 active story 或 task 文件时返回空列表，而不是 `BLOCKED`
 
 ## 7. fallback 规则
 
@@ -333,6 +336,7 @@ resolved_paths: []
 
 - 验证事实源
 - 最终审计记录
+- 最终需求验收记录
 - 可以脱离 `validation-report.md` 单独长期维护的报告
 
 ### 10.1 快照有效条件
@@ -366,31 +370,35 @@ resolved_paths: []
   - 默认 `resume.mode = repair`
   - 默认下一角色是 `dev`
   - 默认下一动作是“修复当前 story 或 task 的验证失败项”
-  - 如果 PM 从 `validation-report.md` 中发现失败根因是 task 边界、依赖或路径范围错误，可改派给 `ta`
+  - 如果 PM 从 `validation-report.md` 中发现失败根因是 proposal 范围错误，可改派给 `ra`
+  - 如果失败根因是 story、architecture、task 审计、依赖或路径范围错误，可改派给 `ta`
 
 - `decision == conditional_pass`
   - 默认 `resume.mode = validate`
-  - 默认下一角色是 `pm`
-  - 默认下一动作是“审阅剩余风险并决定接受还是回流修复”
-  - 在 PM 做出接受风险前，不应自动把 feature 置为 `done`
+  - 默认下一角色是 `ra`
+  - 默认下一动作是“审阅剩余风险，更新 acceptance.md，并决定接受还是回流修复”
+  - 在 RA 做出接受风险前，不应自动把 feature 置为 `done`
 
 - `decision == pass`
-  - 默认下一角色是 `pm`
-  - 默认下一动作是“推进到下一 story、下一 task，或结束当前 feature”
-  - 如果当前 `active_phase == validating` 且没有剩余未验证项，可继续推进到 `done`
+  - 默认下一角色是 `ra`
+  - 默认下一动作是“对照 proposal、全链路文档、QA 报告和证据完成最终需求验收”
+  - 如果当前 `active_phase == validating` 且没有剩余未验证项，应先推进到 `accepting`，RA 接受后再进入 `done`
 
 ### 10.4 与 validation-report 的关系
 
 当 `latest_validation` 有效时：
 
 - 允许 PM 用它做快速路由
-- 不允许 PM 仅凭它完成最终验收归档
+- 不允许 PM 或 RA 仅凭它完成最终验收归档
 
 在以下场景，PM 应回读 `validation-report.md` 再做最终动作：
 
-- 准备将 feature 标记为 `done`
-- 准备接受 `conditional_pass`
 - 准备把失败从 `dev` 改派给 `ta` 或 `ra`
+
+在以下场景，RA 应回读 `validation-report.md` 并更新 `acceptance.md`：
+
+- 准备接受 `conditional_pass`
+- 准备接受最终结果并允许 feature 进入 `done`
 
 ### 10.5 建议输出
 
@@ -414,32 +422,58 @@ latest_validation_hint:
 
 ## 11. 角色最小展开结果
 
-### 10.1 dev 读权限
-
-至少应展开出：
-
-- `codespec/README.md`
-- `codespec/specs/<active_feature>/stories.md`
-- `codespec/specs/<active_feature>/tasks.md`
-- 当前 active task 的 `read_paths`
-
-### 10.2 dev 写权限
-
-至少应展开出：
-
-- 当前 active task 的 `write_paths`
-
-### 10.3 qa 读权限
+### 11.1 ra 读权限
 
 至少应展开出：
 
 - `codespec/README.md`
 - `codespec/specs/<active_feature>/proposal.md`
 - `codespec/specs/<active_feature>/stories.md`
+- `codespec/specs/<active_feature>/architecture.md`
 - `codespec/specs/<active_feature>/tasks.md`
+- `codespec/specs/<active_feature>/validation-report.md`
+- `codespec/specs/<active_feature>/acceptance.md`
+- 当前 story 下所有 task 的 `write_paths` 并集，用于最终验收时查看实现证据；如果当前没有 active story，optional resolver 返回空列表
+
+### 11.2 ra 写权限
+
+至少应展开出：
+
+- `codespec/specs/<active_feature>/proposal.md`
+- `codespec/specs/<active_feature>/acceptance.md`
+
+### 11.3 dev 读权限
+
+至少应展开出：
+
+- `codespec/README.md`
+- `codespec/specs/<active_feature>/proposal.md`
+- `codespec/specs/<active_feature>/stories.md`
+- `codespec/specs/<active_feature>/architecture.md`
+- `codespec/specs/<active_feature>/tasks.md`
+- `codespec/specs/<active_feature>/acceptance.md`
+- 当前 active task 的 `read_paths`；如果当前处于 planning 且没有 active task，optional resolver 返回空列表
+
+### 11.4 dev 写权限
+
+至少应展开出：
+
+- `codespec/specs/<active_feature>/tasks.md`
+- 当前 active task 的 `write_paths`；如果当前处于 planning 且没有 active task，optional resolver 返回空列表
+
+### 11.5 qa 读权限
+
+至少应展开出：
+
+- `codespec/README.md`
+- `codespec/specs/<active_feature>/proposal.md`
+- `codespec/specs/<active_feature>/stories.md`
+- `codespec/specs/<active_feature>/architecture.md`
+- `codespec/specs/<active_feature>/tasks.md`
+- `codespec/specs/<active_feature>/acceptance.md`
 - 当前 story 下所有 task 的 `write_paths` 并集
 
-### 10.4 qa 写权限
+### 11.6 qa 写权限
 
 至少应展开出：
 
@@ -450,7 +484,7 @@ latest_validation_hint:
 只要出现以下情况之一，调度器就应返回 `BLOCKED` 而不是猜测：
 
 - `active_feature` 缺失但 resolver 依赖 feature
-- `active_task` 缺失但 resolver 依赖 task
+- `active_task` 缺失但非 optional resolver 依赖 task
 - `tasks.md` 缺失或不可解析
 - 目标 task 不存在
 - task 字段类型不正确，例如 `read_paths` 不是列表
@@ -553,6 +587,7 @@ latest_validation_hint:
 - 不要在 v0.1 引入任意表达式求值
 - 不要让 resolver 执行命令、读网络或推导未声明路径
 - 所有动态范围都必须来源于 `state.json` 或 `tasks.md`
+- 只有显式 `optional: true` 的 resolver 可以在 planning 或文档审计阶段返回空范围
 
 ## 16. 参考脚本
 
@@ -589,14 +624,14 @@ python <skill-dir>/scripts/sync_validation_snapshot.py --repo-root <repo-root> -
 
 - 它只负责把 QA 报告同步成运行态快照
 - 它不决定下一角色、不改写 `active_phase`、不改写 `active_dispatch`
-- `validation-report.md` 仍然是 QA 事实源，快照只是为 PM 续跑提速
+- `validation-report.md` 仍然是 QA 事实源，快照只是为 PM 续跑提速，不替代 RA 的 `acceptance.md`
 
 ### 16.2 `resume_orchestrator.py`
 
 用途：
 
 - 读取 `codespec/runtime/state.json`
-- 读取当前 feature 的 `stories.md / tasks.md`
+- 读取当前 feature 的 `stories.md / architecture.md / tasks.md`
 - 先消费 `state.json.latest_validation`
 - 仅在快照不完整时，回退解析 `validation-report.md` 当前 story 段落
 - 输出下一角色、下一动作与建议阶段
@@ -623,7 +658,8 @@ python <skill-dir>/scripts/resume_orchestrator.py --repo-root <repo-root> --appl
 
 - 它负责业务路由建议，不负责权限展开
 - 它可以在快照不完整时回退读取 QA 报告，但不能替代 QA 事实源
-- 当 PM 需要接受 `conditional_pass`、结束 feature 或人工改派角色时，仍应回读验证报告正文
+- 当 RA 需要接受 `conditional_pass` 或结束 feature 时，仍应回读验证报告正文并更新 `acceptance.md`
+- 当 PM 需要人工改派角色时，仍应回读验证报告正文
 
 ### 16.3 `resolve_dispatch.py`
 
@@ -675,11 +711,12 @@ python <skill-dir>/scripts/resolve_dispatch.py --repo-root <repo-root> --target-
 
 1. QA 更新 `validation-report.md`
 2. PM 运行 `sync_validation_snapshot.py --apply`
-3. PM 运行 `resume_orchestrator.py` 判断下一跳
+3. PM 运行 `resume_orchestrator.py` 判断下一跳；QA 通过或有条件通过时下一跳为 RA
 4. 如需落盘续跑建议，再执行 `resume_orchestrator.py --apply`
 5. PM 运行 `resolve_dispatch.py` 为下一角色展开最小读写范围
 6. 派发目标角色，执行本轮工作
+7. RA 在 `accepting` 阶段更新 `acceptance.md`，接受后 PM 才能将 feature 标记为 `done`
 
 一句话版本：
 
-`validation-report.md -> sync_validation_snapshot.py -> state.json.latest_validation -> resume_orchestrator.py -> resolve_dispatch.py`
+`validation-report.md -> sync_validation_snapshot.py -> state.json.latest_validation -> resume_orchestrator.py -> resolve_dispatch.py -> acceptance.md`

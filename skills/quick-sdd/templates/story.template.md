@@ -1,5 +1,7 @@
 # 用户故事
 
+> Owner: `ta`。Story 文档定义用户可感知价值、验收标准和依赖关系；不要写实现任务、ACL 或执行命令。
+
 ## 索引
 
 | ID | 标题 | 优先级 | 状态 | 依赖 |
@@ -28,6 +30,12 @@ depends_on: []
 
 - `AC-1`: Given ..., when ..., then ...
 - `AC-2`: Given ..., when ..., then ...
+
+### 架构关联
+
+<!-- 如 story 依赖架构设计，请引用 architecture.md 中的决策 ID。 -->
+
+- `AD-001`
 
 ### 范围外
 

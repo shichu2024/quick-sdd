@@ -1,30 +1,44 @@
 # 任务清单
 
+> Owner: `dev`。Task 文档定义执行计划、ACL、依赖和验证方式；TA 只审计边界与架构一致性，不替 DEV 代写任务。
+
 ## 索引
 
 | ID | Story | 标题 | 状态 | 依赖 | 负责人 |
 |----|-------|-------|--------|------------|-------|
-| {{task_id}} | {{story_id}} | {{task_title}} | todo | - | dev |
+| 待 DEV 编写 | {{story_id}} |  | draft | - | dev |
 
-## {{task_id}} {{task_title}}
+## 编写说明
 
-```yaml
-id: {{task_id}}
-story_id: {{story_id}}
-title: {{task_title}}
-owner_role: dev
-status: todo
-depends_on: []
-read_paths:
-  - src/**
-write_paths:
-  - src/**
-verify:
-  - type: command
-    value: npm test
-  - type: manual
-    value: 确认验收标准已满足
-```
+DEV 在 `planning` 阶段把本文件改写为真实任务。每个真实 task 必须使用 `## T-xxx ...` 二级标题，并在标题下放置 YAML 元数据块。
+
+示例：
+
+````markdown
+  ## T-001 {{task_title}}
+
+  ```yaml
+  id: T-001
+  story_id: {{story_id}}
+  title: {{task_title}}
+  owner_role: dev
+  status: todo
+  review:
+    reviewer_role: ta
+    status: pending
+    notes: ""
+  depends_on: []
+  read_paths:
+    - src/**
+  write_paths:
+    - src/**
+  verify:
+    - type: command
+      value: npm test
+    - type: manual
+      value: 确认验收标准已满足
+  ```
+````
 
 ### 目标
 
@@ -32,11 +46,24 @@ verify:
 
 - 
 
+### 架构依据
+
+<!-- 引用 architecture.md 中的设计决策或约束。 -->
+
+- `AD-001`
+
 ### 交付物
 
 <!-- 列出具体输出或可观察结果。 -->
 
 - 
+
+### TA 审计记录
+
+<!-- TA 审计 task 边界、依赖、ACL、verify 和架构一致性。 -->
+
+- 状态：pending
+- 意见：
 
 ### 备注
 
