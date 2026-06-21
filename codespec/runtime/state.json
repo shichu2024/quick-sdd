@@ -33,30 +33,30 @@
       "last_updated": "最后更新时间，建议使用 ISO 8601 时间格式。"
     }
   },
-  "active_feature": "FEAT-001-角色专业能力赋能",
-  "active_phase": "done",
+  "active_feature": "FEAT-002-html规格站点生成",
+  "active_phase": "validating",
   "active_dispatch": {
-    "role": "",
-    "story": "",
-    "task": ""
+    "role": "qa",
+    "story": "ST-002",
+    "task": "T-003"
   },
   "resume": {
-    "mode": "continue",
-    "next_role": "pm",
-    "next_action": "当前 feature 已完成；如需继续扩展角色能力，可在此基线上新增后续 story 或创建新 feature"
+    "mode": "validate",
+    "next_role": "qa",
+    "next_action": "审计 FEAT-002 的文档、实现和验证证据；重点检查 AGENTS 自动开关、init 自动生成、存量转换命令和 codespec/index.html 入口。"
   },
   "latest_validation": {
-    "story": "ST-005",
-    "task": "T-014",
-    "status": "DONE",
-    "decision": "pass",
-    "root_cause_type": "none",
-    "reroute_to": "ra",
-    "reroute_action": "无需修复回流，交由 RA 对照原始需求、全链路文档和 QA 证据完成最终验收。",
-    "summary": "ST-005 验证裁决为 pass；建议交给 RA 做最终需求验收",
-    "report_ref": "codespec/specs/FEAT-001-角色专业能力赋能/validation-report.md#st-005",
-    "updated_at": "2026-06-17T07:18:22Z"
+    "story": "",
+    "task": "",
+    "status": "",
+    "decision": "",
+    "root_cause_type": "",
+    "reroute_to": "",
+    "reroute_action": "",
+    "summary": "",
+    "report_ref": "",
+    "updated_at": ""
   },
   "blocked": [],
-  "last_updated": "2026-06-17T07:18:22Z"
+  "last_updated": "2026-06-18T01:24:40+08:00"
 }
