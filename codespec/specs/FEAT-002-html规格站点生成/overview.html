@@ -1,0 +1,1046 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FEAT-002 · HTML 规格站点生成</title>
+<style>/* Quick SDD Feature Overview — Canonical CSS Template
+ * Source of truth: skills/quick-sdd/templates/html/feature-overview.css
+ * Any project using quick-sdd reads from this file to ensure style consistency.
+ * Edit this file to change the visual design; do NOT edit the Python script's CSS string.
+ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f8f9fb;
+  --surface: #fff;
+  --border: #e2e6ed;
+  --border-light: #eef1f6;
+  --text: #1a1d23;
+  --text-sec: #5a6170;
+  --text-mute: #8b92a0;
+  --accent: #4f6ef7;
+  --accent-l: #eef1ff;
+  --accent-d: #3a56d4;
+  --proposal: #e8793a;
+  --proposal-bg: #fef4ee;
+  --story: #7c5cbf;
+  --story-bg: #f5f0ff;
+  --arch: #2a9d8f;
+  --arch-bg: #edf8f6;
+  --task: #4f6ef7;
+  --task-bg: #eef1ff;
+  --done: #22c55e;
+  --done-bg: #ecfdf5;
+  --ready: #f59e0b;
+  --ready-bg: #fffbeb;
+  --todo: #94a3b8;
+  --todo-bg: #f8fafc;
+  --risk: #ef4444;
+  --risk-bg: #fef2f2;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .04);
+  --shadow: 0 1px 4px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace;
+  --sidebar-w: 260px;
+}
+
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform .25s ease;
+}
+
+.sidebar-hd {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sidebar-hd .logo {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 2px;
+}
+
+.sidebar-hd .fid {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+}
+
+.nav-grp {
+  padding: 0 12px;
+  margin-bottom: 4px;
+}
+
+.nav-grp-title {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  padding: 8px 8px 4px;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-size: .83rem;
+  color: var(--text-sec);
+  text-decoration: none;
+  transition: all .15s ease;
+}
+
+.sidebar-nav a:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.sidebar-nav a.active {
+  background: var(--accent-l);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot.p { background: var(--proposal); }
+.dot.s { background: var(--story); }
+.dot.a { background: var(--arch); }
+.dot.t { background: var(--task); }
+
+.sidebar-ft {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-light);
+  font-size: .72rem;
+  color: var(--text-mute);
+}
+
+/* ── Main Content ── */
+.main {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(248, 249, 251, .88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar .bc {
+  font-size: .85rem;
+  color: var(--text-mute);
+}
+
+.topbar .bc strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--radius);
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-l);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all .15s ease;
+}
+
+.back-btn:hover {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.back-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.back-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .2s ease;
+  z-index: 200;
+}
+
+.back-top.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.back-top:hover {
+  background: var(--accent-d);
+  transform: translateY(-2px);
+}
+
+.pill {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.pill.done { background: var(--done-bg); color: #15803d; }
+.pill.ready { background: var(--ready-bg); color: #b45309; }
+.pill.draft { background: #f1f5f9; color: #475569; }
+
+.content {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 32px 40px 80px;
+}
+
+/* ── Hero ── */
+.hero {
+  margin-bottom: 36px;
+}
+
+.hero h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.badge.p1 { border-color: #fbbf24; background: #fffbeb; color: #92400e; }
+.badge.p0 { border-color: var(--risk); background: var(--risk-bg); color: #991b1b; }
+.badge.type { border-color: var(--accent); background: var(--accent-l); color: var(--accent); }
+
+.hero-desc {
+  font-size: .93rem;
+  color: var(--text-sec);
+  max-width: 680px;
+  line-height: 1.7;
+}
+
+/* ── Stats ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.stat .n {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat .l {
+  font-size: .73rem;
+  color: var(--text-mute);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.stat.s1 .n { color: var(--proposal); }
+.stat.s2 .n { color: var(--story); }
+.stat.s3 .n { color: var(--arch); }
+.stat.s4 .n { color: var(--task); }
+
+/* ── Section ── */
+.section {
+  margin-bottom: 44px;
+}
+
+.sec-hd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+}
+
+.sec-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sec-ico.p { background: var(--proposal-bg); color: var(--proposal); }
+.sec-ico.s { background: var(--story-bg); color: var(--story); }
+.sec-ico.a { background: var(--arch-bg); color: var(--arch); }
+.sec-ico.t { background: var(--task-bg); color: var(--task); }
+
+.sec-hd h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.sec-cnt {
+  margin-left: auto;
+  font-size: .76rem;
+  color: var(--text-mute);
+  background: var(--bg);
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .15s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow);
+}
+
+.card-hd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.cid {
+  font-size: .73rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  flex-shrink: 0;
+}
+
+.cid.p { background: var(--proposal-bg); color: var(--proposal); }
+.cid.s { background: var(--story-bg); color: var(--story); }
+.cid.a { background: var(--arch-bg); color: var(--arch); }
+.cid.t { background: var(--task-bg); color: var(--task); }
+
+.ctitle {
+  font-size: .93rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.cst {
+  font-size: .72rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.cst.done { background: var(--done-bg); color: #15803d; }
+.cst.ready { background: var(--ready-bg); color: #b45309; }
+.cst.todo { background: var(--todo-bg); color: #64748b; }
+.cst.draft { background: #f1f5f9; color: #475569; }
+
+/* ── Prose ── */
+.prose {
+  font-size: .88rem;
+  color: var(--text-sec);
+  line-height: 1.7;
+}
+
+.prose ul, .prose ol {
+  padding-left: 18px;
+  margin: 4px 0;
+}
+
+.prose li {
+  margin-bottom: 3px;
+}
+
+.prose li::marker {
+  color: var(--text-mute);
+}
+
+.prose p {
+  margin-bottom: 6px;
+}
+
+.prose code {
+  font-family: var(--mono);
+  font-size: .82em;
+  background: var(--bg);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+}
+
+.prose strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.prose pre {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: .82rem;
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+.prose pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 8px 14px;
+  margin: 8px 0;
+  background: var(--accent-l);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: .85rem;
+  color: var(--text-sec);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .83rem;
+  margin: 8px 0;
+}
+
+.prose th {
+  text-align: left;
+  padding: 7px 10px;
+  font-weight: 600;
+  color: var(--text-sec);
+  border-bottom: 2px solid var(--border);
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.prose td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-sec);
+  vertical-align: top;
+}
+
+.prose tr:hover td {
+  background: var(--bg);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+/* ── Mermaid Diagrams ── */
+.prose pre.mermaid {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  margin: 12px 0;
+  text-align: center;
+}
+
+/* ── Subsection ── */
+.subsec {
+  margin-bottom: 20px;
+}
+
+.subsec h3 {
+  font-size: 1.02rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.subsec h4 {
+  font-size: .9rem;
+  font-weight: 600;
+  margin: 10px 0 4px;
+  color: var(--text-sec);
+}
+
+/* ── Acceptance Criteria ── */
+.ac-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0;
+}
+
+.ac-item {
+  display: flex;
+  gap: 10px;
+  padding: 8px 12px;
+  margin-bottom: 5px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  font-size: .84rem;
+  border-left: 3px solid var(--story);
+}
+
+.ac-id {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--story);
+  flex-shrink: 0;
+  font-size: .78rem;
+}
+
+.ac-text {
+  color: var(--text-sec);
+  line-height: 1.6;
+}
+
+/* ── Dependency Tag ── */
+.dep {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: .73rem;
+  font-family: var(--mono);
+  padding: 1px 7px;
+  border-radius: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-mute);
+}
+
+/* ── Callout ── */
+.callout {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  margin: 10px 0;
+  font-size: .84rem;
+  line-height: 1.6;
+}
+
+.callout.risk {
+  background: var(--risk-bg);
+  border-left: 3px solid var(--risk);
+  color: #991b1b;
+}
+
+.callout.info {
+  background: var(--accent-l);
+  border-left: 3px solid var(--accent);
+  color: #1e40af;
+}
+
+.callout-ok {
+  background: var(--done-bg);
+  border-left: 3px solid var(--done);
+  color: #15803d;
+}
+
+.callout svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── Task Toggle ── */
+.task-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .76rem;
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 3px 0;
+}
+
+.task-toggle:hover {
+  color: var(--accent-d);
+}
+
+.task-toggle svg {
+  transition: transform .2s ease;
+}
+
+.task-toggle.open svg {
+  transform: rotate(90deg);
+}
+
+.task-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease;
+}
+
+.task-detail.open {
+  max-height: 2000px;
+}
+
+/* ── Scope Grid ── */
+.scope-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.scope-in {
+  border-left: 3px solid var(--done);
+}
+
+.scope-out {
+  border-left: 3px solid var(--risk);
+}
+
+.scope-label {
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 6px;
+}
+
+.scope-label.in { color: var(--done); }
+.scope-label.out { color: var(--risk); }
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .main {
+    margin-left: 0;
+  }
+  .content {
+    padding: 24px 20px 60px;
+  }
+  .topbar {
+    padding: 12px 20px;
+  }
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .scope-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Print ── */
+@media print {
+  .sidebar, .topbar, .task-toggle {
+    display: none !important;
+  }
+  .main {
+    margin-left: 0;
+  }
+  .card {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+  .task-detail {
+    max-height: none !important;
+  }
+  html {
+    font-size: 12px;
+  }
+}
+</style></head><body>
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-hd"><div class="logo">Quick SDD</div><div class="fid">FEAT-002</div></div>
+<nav class="sidebar-nav"><div class="nav-grp"><div class="nav-grp-title">概览</div>
+<a href="#overview" class="active" onclick="setActive(this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Feature 总览</a></div>
+<div class="nav-grp"><div class="nav-grp-title">需求设计</div>
+<a href="#proposal" onclick="setActive(this)"><span class="dot p"></span>提案概述</a>
+<a href="#prop-问题" onclick="setActive(this)"><span class="dot p"></span>问题</a>
+<a href="#prop-目标" onclick="setActive(this)"><span class="dot p"></span>目标</a>
+<a href="#prop-范围内" onclick="setActive(this)"><span class="dot p"></span>范围内</a>
+<a href="#prop-范围外" onclick="setActive(this)"><span class="dot p"></span>范围外</a>
+<a href="#prop-风险" onclick="setActive(this)"><span class="dot p"></span>风险</a>
+<a href="#prop-待确认问题" onclick="setActive(this)"><span class="dot p"></span>待确认问题</a>
+</div>
+<div class="nav-grp"><div class="nav-grp-title">Story 设计</div>
+<a href="#stories" onclick="setActive(this)"><span class="dot s"></span>故事索引</a>
+<a href="#st-001" onclick="setActive(this)"><span class="dot s"></span>ST-001 自动生成 HTML 规格</a>
+<a href="#st-002" onclick="setActive(this)"><span class="dot s"></span>ST-002 手动转换存量规格</a>
+</div>
+<div class="nav-grp"><div class="nav-grp-title">架构设计</div>
+<a href="#architecture" onclick="setActive(this)"><span class="dot a"></span>架构概述</a>
+<a href="#arch-背景" onclick="setActive(this)"><span class="dot a"></span>背景</a>
+<a href="#arch-关键决策" onclick="setActive(this)"><span class="dot a"></span>关键决策</a>
+<a href="#arch-模块与接口" onclick="setActive(this)"><span class="dot a"></span>模块与接口</a>
+<a href="#arch-风险与验证影响" onclick="setActive(this)"><span class="dot a"></span>风险与验证影响</a>
+</div>
+<div class="nav-grp"><div class="nav-grp-title">任务清单</div>
+<a href="#tasks" onclick="setActive(this)"><span class="dot t"></span>任务索引</a>
+<a href="#phase-a" onclick="setActive(this)"><span class="dot t"></span>A 生成链路</a>
+</div></nav>
+<div class="sidebar-ft">Generated by Quick SDD</div>
+</aside>
+<div class="main">
+<header class="topbar">
+<button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')" style="display:none;background:none;border:none;cursor:pointer;padding:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<a class="back-btn" href="../../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>所有特性</a>
+<div class="bc">codespec / specs / <strong>FEAT-002</strong></div>
+<span class="pill ready"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Validating</span>
+</header>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg></button>
+<div class="content">
+<section class="hero" id="overview">
+<h1>HTML 规格站点生成</h1>
+<div class="hero-meta">
+<span class="badge type">enhancement</span>
+<span class="badge p1">P1</span>
+<span class="badge">FEAT-002</span>
+<span class="badge">FEAT-001</span>
+</div>
+</section>
+<div class="stats">
+<div class="stat s1"><div class="n">1</div><div class="l">提案</div></div>
+<div class="stat s2"><div class="n">2</div><div class="l">用户故事</div></div>
+<div class="stat s3"><div class="n">5</div><div class="l">架构章节</div></div>
+<div class="stat s4"><div class="n">3/3</div><div class="l">任务完成</div></div>
+</div>
+<section class="section" id="proposal">
+<div class="sec-hd"><div class="sec-ico p"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><h2>需求设计 · Proposal</h2></div>
+<div class="subsec"><h3>提案</h3>
+<div class="card"><div class="prose"></div></div>
+</div>
+<div class="subsec" id="prop-问题"><h3>问题</h3>
+<div class="card"><div class="prose"><ul>
+<li>Quick SDD 的规格产物目前主要是 Markdown，适合 diff 和协作，但不适合直接作为浏览式规格站点阅读。</li>
+<li>已有 <code>generate_overview.py</code> 雏形只能生成单个 feature 的 <code>overview.html</code>，尚未接入初始化流程、AGENTS 开关、项目级索引或存量转换命令。</li>
+<li>用户希望 HTML 生成默认开启，但可以在 <code>AGENTS.md</code> 中关闭自动生成，并保留手动命令触发能力。</li>
+<li>后续会提供正式 HTML 模板，因此当前机制需要先固定生成入口和扩展点，避免把功能写成一次性脚本。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-目标"><h3>目标</h3>
+<div class="card"><div class="prose"><ul>
+<li>初始化或生成新规格文档时，默认同步生成 feature 级 <code>overview.html</code> 与项目级 <code>codespec/index.html</code>。</li>
+<li>在 <code>AGENTS.md</code> 中提供稳定配置块，可把自动 HTML 生成关闭为 <code>enabled: false</code>。</li>
+<li>提供手动转换存量规格的命令：<code>python skills/quick-sdd/scripts/generate_overview.py --repo-root . --all</code>。</li>
+<li>保持旧入口 <code>python skills/quick-sdd/scripts/generate_overview.py &lt;feature_dir&gt;</code> 兼容。</li>
+<li>用自动化测试覆盖配置开关、手动转换、CLI 和初始化默认生成行为。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-范围内"><h3>范围内</h3>
+<div class="card"><div class="prose"><ul>
+<li>扩展 <code>skills/quick-sdd/scripts/generate_overview.py</code>，支持 repo 级发现、批量生成、项目索引、JSON 输出与 AGENTS 配置读取。</li>
+<li>扩展 <code>skills/quick-sdd/scripts/init_codespec.py</code>，在 scaffold feature 后按配置自动触发 HTML 生成。</li>
+<li>更新 <code>AGENTS.md</code>、<code>agents.template.md</code>、<code>README.template.md</code>、<code>codespec/README.md</code> 与主 <code>SKILL.md</code> 的说明。</li>
+<li>为当前存量 <code>FEAT-001</code> 生成 <code>overview.html</code>，并生成项目级 <code>codespec/index.html</code>。</li>
+<li>新增 <code>tests/test_generate_overview.py</code> 回归测试。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-范围外"><h3>范围外</h3>
+<div class="card"><div class="prose"><ul>
+<li>不在本轮确定用户后续会提供的最终视觉模板内容。</li>
+<li>不引入 Web 服务、前端框架或构建系统；当前 HTML 仍是静态文件。</li>
+<li>不改变 Quick SDD 的角色流程、状态机或 Markdown 规格事实源。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-风险"><h3>风险</h3>
+<div class="card"><div class="prose"><ul>
+<li>如果未来模板变量设计变复杂，当前内置模板可能需要进一步拆分为外部模板文件。</li>
+<li>自动生成会产生派生 HTML 文件，需要团队确认是否作为可提交产物保留。</li>
+<li><code>AGENTS.md</code> 的配置块需要保持稳定，避免不同项目自行改名导致脚本无法识别。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-待确认问题"><h3>待确认问题</h3>
+<div class="card"><div class="prose"><ul>
+<li>后续正式 HTML 模板的变量契约、视觉结构和是否需要外部静态资源仍待用户提供。</li>
+</ul></div></div>
+</div>
+</section>
+<section class="section" id="stories">
+<div class="sec-hd"><div class="sec-ico s"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h2>Story 设计 · User Stories</h2><span class="sec-cnt">2 stories</span></div>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>标题</th><th>优先级</th><th>状态</th><th>依赖</th></tr></thead><tbody>
+<tr><td><strong>ST-001</strong></td><td><a href="#st-001" style="color:var(--text);text-decoration:none">自动生成 HTML 规格站点</a></td><td>P1</td><td><span class="cst ready">ready</span></td><td>—</td></tr>
+<tr><td><strong>ST-002</strong></td><td><a href="#st-002" style="color:var(--text);text-decoration:none">手动转换存量规格</a></td><td>P1</td><td><span class="cst ready">ready</span></td><td>—</td></tr>
+</tbody></table></div>
+<div class="card" id="st-001">
+<div class="card-hd"><span class="cid s">ST-001</span><span class="ctitle">自动生成 HTML 规格站点</span><span class="cst ready">ready</span></div>
+<div class="prose"><p>作为 Quick SDD 维护者，我希望新建规格文档时默认同步生成 HTML 视图，以便规格能直接通过浏览器阅读。</p></div>
+<h4 style="font-size:.88rem;font-weight:600;margin:10px 0 4px;color:var(--text-sec)">验收标准</h4>
+<ul class="ac-list">
+<li class="ac-item"><span class="ac-id">AC-1</span><span class="ac-text">Given `AGENTS.md` 未关闭 HTML 自动生成，when 运行 `init_codespec.py --feature-title ...`，then 新 feature 目录包含 `overview.html`。</span></li>
+<li class="ac-item"><span class="ac-id">AC-2</span><span class="ac-text">Given 已生成至少一个 feature overview，when 初始化完成，then `codespec/index.html` 包含项目级规格入口。</span></li>
+<li class="ac-item"><span class="ac-id">AC-3</span><span class="ac-text">Given `AGENTS.md` 中 `quick_sdd.html_export.enabled=false`，when 自动生成路径运行，then HTML 生成被跳过且规格 Markdown 仍能生成。</span></li>
+</ul>
+</div>
+<div class="card" id="st-002">
+<div class="card-hd"><span class="cid s">ST-002</span><span class="ctitle">手动转换存量规格</span><span class="cst ready">ready</span></div>
+<div class="prose"><p>作为 Quick SDD 维护者，我希望可以用命令批量转换已有 <code>codespec/specs/*</code>，以便历史 feature 也能进入 HTML 规格站点。</p></div>
+<h4 style="font-size:.88rem;font-weight:600;margin:10px 0 4px;color:var(--text-sec)">验收标准</h4>
+<ul class="ac-list">
+<li class="ac-item"><span class="ac-id">AC-1</span><span class="ac-text">Given 已有 feature 规格目录，when 运行 `python skills/quick-sdd/scripts/generate_overview.py --repo-root . --all`，then 每个 feature 生成或刷新 `overview.html`。</span></li>
+<li class="ac-item"><span class="ac-id">AC-2</span><span class="ac-text">Given 自动生成已在 `AGENTS.md` 中关闭，when 手动运行转换命令，then 仍然生成 HTML。</span></li>
+<li class="ac-item"><span class="ac-id">AC-3</span><span class="ac-text">Given 调用方需要机器读取结果，when 加上 `--json`，then 命令输出包含生成文件列表。</span></li>
+</ul>
+</div>
+</section>
+<section class="section" id="architecture">
+<div class="sec-hd"><div class="sec-ico a"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div><h2>架构设计 · Architecture</h2></div>
+<div class="subsec"><h3>架构设计</h3>
+<div class="card"><div class="prose"></div></div>
+</div>
+<div class="subsec" id="arch-背景"><h3>背景</h3>
+<div class="card"><div class="prose"><ul>
+<li>Markdown 继续作为 Quick SDD 的规格事实源；HTML 是可再生成的阅读视图。</li>
+<li>现有 <code>generate_overview.py</code> 已能从 feature 文档生成单页 HTML，适合作为扩展基础。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="arch-关键决策"><h3>关键决策</h3>
+<div class="card"><div class="prose"><div class="table-wrap"><table>
+<thead><tr>
+<th>ID</th>
+<th>决策</th>
+<th>原因</th>
+<th>影响</th>
+</tr></thead><tbody>
+<tr>
+<td>AD-001</td>
+<td>将 <code>generate_overview.py</code> 扩展为 repo 级站点生成器</td>
+<td>复用已有 feature 解析和 HTML 渲染逻辑，避免新增并行脚本</td>
+<td>同时支持旧单 feature 入口与新 <code>--repo-root --all</code> 入口</td>
+</tr>
+<tr>
+<td>AD-002</td>
+<td><code>AGENTS.md</code> 使用 <code>QUICK-SDD-HTML</code> 配置块控制自动生成</td>
+<td>AGENTS 是项目级协作入口，适合承载人工可改的默认策略</td>
+<td>自动路径尊重 <code>enabled:false</code>，手动命令不受影响</td>
+</tr>
+<tr>
+<td>AD-003</td>
+<td><code>init_codespec.py</code> 在 scaffold 后调用生成器</td>
+<td>用户要求“生成规格文档的同时”生成 HTML</td>
+<td>新 feature 默认得到 <code>overview.html</code> 和 <code>codespec/index.html</code></td>
+</tr>
+<tr>
+<td>AD-004</td>
+<td>项目级入口落在 <code>codespec/index.html</code></td>
+<td>与 <code>codespec/README.md</code> 同层，避免污染项目根目录</td>
+<td>可直接从浏览器打开并导航到各 feature overview</td>
+</tr>
+</tbody></table></div></div></div>
+</div>
+<div class="subsec" id="arch-模块与接口"><h3>模块与接口</h3>
+<div class="card"><div class="prose"><ul>
+<li><code>skills/quick-sdd/scripts/generate_overview.py</code></li>
+<li><code>generate_feature_overview(feature_dir)</code></li>
+<li><code>generate_index(repo_root)</code></li>
+<li><code>generate_site(repo_root, feature_dirs=None, include_index=True, respect_agents_config=False)</code></li>
+<li>CLI：<code>&lt;feature_dir&gt;</code>、<code>--repo-root --all</code>、<code>--feature</code>、<code>--index-only</code>、<code>--json</code></li>
+<li><code>skills/quick-sdd/scripts/init_codespec.py</code></li>
+<li>scaffold feature 后调用 <code>generate_site(..., respect_agents_config=True)</code></li>
+<li>支持 <code>--no-html</code> 作为单次关闭</li>
+<li><code>AGENTS.md</code></li>
+<li>配置块：</li>
+</ul>
+<pre><code>quick_sdd:
+  html_export:
+    enabled: true
+</code></pre></div></div>
+</div>
+<div class="subsec" id="arch-风险与验证影响"><h3>风险与验证影响</h3>
+<div class="card"><div class="prose"><ul>
+<li>HTML 是派生产物，QA 应以 Markdown 和脚本测试为事实源，同时检查生成文件存在性。</li>
+<li>后续模板落地时，建议先增加模板变量契约测试，再替换内置布局。</li>
+</ul></div></div>
+</div>
+</section>
+<section class="section" id="tasks">
+<div class="sec-hd"><div class="sec-ico t"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h2>任务清单 · Tasks</h2><span class="sec-cnt">3 tasks · 3 done</span></div>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>Story</th><th>标题</th><th>状态</th><th>依赖</th><th>负责</th></tr></thead><tbody>
+<tr><td><strong>T-001</strong></td><td>ST-001</td><td>扩展 HTML 生成器为站点生成器</td><td><span class="cst done">done</span></td><td>—</td><td>dev</td></tr>
+<tr><td><strong>T-002</strong></td><td>ST-001</td><td>接入初始化自动生成与 AGENTS 开关</td><td><span class="cst done">done</span></td><td><span class="dep">T-001</span></td><td>dev</td></tr>
+<tr><td><strong>T-003</strong></td><td>ST-002</td><td>支持存量转换命令与回归测试</td><td><span class="cst done">done</span></td><td><span class="dep">T-002</span></td><td>dev</td></tr>
+</tbody></table></div>
+<div class="subsec" id="phase-a"><h3>阶段 A · 生成链路</h3>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-001</span><span class="ctitle">扩展 HTML 生成器为站点生成器</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>支持发现 <code>codespec/specs/FEAT-*</code>。</li>
+<li>支持生成 feature overview 和项目级 <code>codespec/index.html</code>。</li>
+<li>保留旧单 feature 命令入口。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li><code>generate_site</code>、<code>generate_index</code>、<code>discover_feature_dirs</code> 等生成入口。</li>
+<li><code>codespec/index.html</code>。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-002</span><span class="ctitle">接入初始化自动生成与 AGENTS 开关</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li><code>AGENTS.md</code> 默认开启自动 HTML 生成，可手动改为 <code>enabled:false</code>。</li>
+<li><code>init_codespec.py</code> scaffold feature 后按配置触发 HTML 生成。</li>
+<li>提供 <code>--no-html</code> 单次关闭。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li><code>QUICK-SDD-HTML</code> 配置块。</li>
+<li><code>init_codespec.py</code> 自动生成接入。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-003</span><span class="ctitle">支持存量转换命令与回归测试</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>提供 <code>--repo-root . --all</code> 存量转换命令。</li>
+<li><code>--json</code> 输出生成文件列表。</li>
+<li>测试覆盖自动禁用、手动覆盖禁用、CLI 和初始化默认生成。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li><code>tests/test_generate_overview.py</code>。</li>
+<li>更新后的使用说明。</li>
+</ul>
+</div></div></div>
+</div>
+</section>
+</div></div>
+<script>/* Quick SDD Feature Overview — Canonical JS Template
+ * Source of truth: skills/quick-sdd/templates/html/feature-overview.js
+ */
+function setActive(el) {
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+  if (window.innerWidth <= 860) document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleDetail(btn) {
+  btn.classList.toggle('open');
+  btn.closest('.card').querySelector('.task-detail').classList.toggle('open');
+}
+
+const secs = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('.sidebar-nav a[href^="#"]');
+const obs = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.getAttribute('id');
+      links.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#' + id); });
+    }
+  });
+}, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+secs.forEach(s => obs.observe(s));
+
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => { backTop.classList.toggle('show', window.scrollY > 400); }, { passive: true });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"neutral",securityLevel:"loose"});</script>
+<style>@media(max-width:860px){.menu-btn{display:block!important}}</style>
+</body></html>

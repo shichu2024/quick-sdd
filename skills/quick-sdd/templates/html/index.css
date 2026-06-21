@@ -1,0 +1,323 @@
+/* Quick SDD Specs Index — Canonical CSS Template
+ * Source of truth: skills/quick-sdd/templates/html/index.css
+ * Any project using quick-sdd reads from this file to ensure style consistency.
+ * Edit this file to change the index page design; do NOT edit the Python script's CSS string.
+ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f7f8fb;
+  --surface: #fff;
+  --border: #dfe4ec;
+  --text: #20242c;
+  --muted: #667085;
+  --accent: #3158d4;
+  --accent-bg: #eef2ff;
+  --done: #15803d;
+  --draft: #64748b;
+  --shadow: 0 1px 3px rgba(16, 24, 40, .08);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.6;
+}
+
+header {
+  padding: 24px 40px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 32px 64px;
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+  letter-spacing: 0;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: .88rem;
+}
+
+/* ── Controls ── */
+.controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 20px 0 16px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px 12px 8px 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: .88rem;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color .15s;
+}
+
+.search-box input:focus {
+  border-color: var(--accent);
+}
+
+.search-box svg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-group {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: .78rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  border-color: #b8c3d8;
+  color: var(--text);
+}
+
+.filter-btn.active {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sort-select {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: .82rem;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+}
+
+.result-info {
+  font-size: .82rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  min-height: 156px;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.card:hover {
+  border-color: #b8c3d8;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, .1);
+}
+
+.card-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.id {
+  font-family: "SF Mono", Consolas, monospace;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: .78rem;
+}
+
+.status {
+  margin-left: auto;
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: .74rem;
+  background: #f1f5f9;
+  color: var(--draft);
+}
+
+.status.done, .status.accepted, .status.pass {
+  background: #ecfdf5;
+  color: var(--done);
+}
+
+.status.ready, .status.validating, .status.draft {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.desc {
+  font-size: .86rem;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.foot {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.tag {
+  font-size: .74rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1px 7px;
+}
+
+/* ── Pagination ── */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: .84rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.page-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.page-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.page-btn:disabled {
+  opacity: .4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.page-ellipsis {
+  padding: 0 4px;
+  color: var(--muted);
+  font-size: .84rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+.empty-state svg {
+  margin-bottom: 12px;
+  opacity: .4;
+}
+
+.empty-state p {
+  font-size: .95rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  header {
+    padding: 20px 20px 16px;
+  }
+
+  main {
+    padding: 20px 16px 48px;
+  }
+
+  .controls {
+    gap: 8px;
+  }
+
+  .search-box {
+    max-width: none;
+    min-width: 0;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

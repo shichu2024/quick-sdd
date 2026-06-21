@@ -1,0 +1,1276 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FEAT-001 · 角色专业能力赋能</title>
+<style>/* Quick SDD Feature Overview — Canonical CSS Template
+ * Source of truth: skills/quick-sdd/templates/html/feature-overview.css
+ * Any project using quick-sdd reads from this file to ensure style consistency.
+ * Edit this file to change the visual design; do NOT edit the Python script's CSS string.
+ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f8f9fb;
+  --surface: #fff;
+  --border: #e2e6ed;
+  --border-light: #eef1f6;
+  --text: #1a1d23;
+  --text-sec: #5a6170;
+  --text-mute: #8b92a0;
+  --accent: #4f6ef7;
+  --accent-l: #eef1ff;
+  --accent-d: #3a56d4;
+  --proposal: #e8793a;
+  --proposal-bg: #fef4ee;
+  --story: #7c5cbf;
+  --story-bg: #f5f0ff;
+  --arch: #2a9d8f;
+  --arch-bg: #edf8f6;
+  --task: #4f6ef7;
+  --task-bg: #eef1ff;
+  --done: #22c55e;
+  --done-bg: #ecfdf5;
+  --ready: #f59e0b;
+  --ready-bg: #fffbeb;
+  --todo: #94a3b8;
+  --todo-bg: #f8fafc;
+  --risk: #ef4444;
+  --risk-bg: #fef2f2;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .04);
+  --shadow: 0 1px 4px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace;
+  --sidebar-w: 260px;
+}
+
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform .25s ease;
+}
+
+.sidebar-hd {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sidebar-hd .logo {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 2px;
+}
+
+.sidebar-hd .fid {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+}
+
+.nav-grp {
+  padding: 0 12px;
+  margin-bottom: 4px;
+}
+
+.nav-grp-title {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  padding: 8px 8px 4px;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-size: .83rem;
+  color: var(--text-sec);
+  text-decoration: none;
+  transition: all .15s ease;
+}
+
+.sidebar-nav a:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.sidebar-nav a.active {
+  background: var(--accent-l);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot.p { background: var(--proposal); }
+.dot.s { background: var(--story); }
+.dot.a { background: var(--arch); }
+.dot.t { background: var(--task); }
+
+.sidebar-ft {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-light);
+  font-size: .72rem;
+  color: var(--text-mute);
+}
+
+/* ── Main Content ── */
+.main {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(248, 249, 251, .88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar .bc {
+  font-size: .85rem;
+  color: var(--text-mute);
+}
+
+.topbar .bc strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--radius);
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-l);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all .15s ease;
+}
+
+.back-btn:hover {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.back-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.back-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .2s ease;
+  z-index: 200;
+}
+
+.back-top.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.back-top:hover {
+  background: var(--accent-d);
+  transform: translateY(-2px);
+}
+
+.pill {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.pill.done { background: var(--done-bg); color: #15803d; }
+.pill.ready { background: var(--ready-bg); color: #b45309; }
+.pill.draft { background: #f1f5f9; color: #475569; }
+
+.content {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 32px 40px 80px;
+}
+
+/* ── Hero ── */
+.hero {
+  margin-bottom: 36px;
+}
+
+.hero h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.badge.p1 { border-color: #fbbf24; background: #fffbeb; color: #92400e; }
+.badge.p0 { border-color: var(--risk); background: var(--risk-bg); color: #991b1b; }
+.badge.type { border-color: var(--accent); background: var(--accent-l); color: var(--accent); }
+
+.hero-desc {
+  font-size: .93rem;
+  color: var(--text-sec);
+  max-width: 680px;
+  line-height: 1.7;
+}
+
+/* ── Stats ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.stat .n {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat .l {
+  font-size: .73rem;
+  color: var(--text-mute);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.stat.s1 .n { color: var(--proposal); }
+.stat.s2 .n { color: var(--story); }
+.stat.s3 .n { color: var(--arch); }
+.stat.s4 .n { color: var(--task); }
+
+/* ── Section ── */
+.section {
+  margin-bottom: 44px;
+}
+
+.sec-hd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+}
+
+.sec-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sec-ico.p { background: var(--proposal-bg); color: var(--proposal); }
+.sec-ico.s { background: var(--story-bg); color: var(--story); }
+.sec-ico.a { background: var(--arch-bg); color: var(--arch); }
+.sec-ico.t { background: var(--task-bg); color: var(--task); }
+
+.sec-hd h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.sec-cnt {
+  margin-left: auto;
+  font-size: .76rem;
+  color: var(--text-mute);
+  background: var(--bg);
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .15s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow);
+}
+
+.card-hd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.cid {
+  font-size: .73rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  flex-shrink: 0;
+}
+
+.cid.p { background: var(--proposal-bg); color: var(--proposal); }
+.cid.s { background: var(--story-bg); color: var(--story); }
+.cid.a { background: var(--arch-bg); color: var(--arch); }
+.cid.t { background: var(--task-bg); color: var(--task); }
+
+.ctitle {
+  font-size: .93rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.cst {
+  font-size: .72rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.cst.done { background: var(--done-bg); color: #15803d; }
+.cst.ready { background: var(--ready-bg); color: #b45309; }
+.cst.todo { background: var(--todo-bg); color: #64748b; }
+.cst.draft { background: #f1f5f9; color: #475569; }
+
+/* ── Prose ── */
+.prose {
+  font-size: .88rem;
+  color: var(--text-sec);
+  line-height: 1.7;
+}
+
+.prose ul, .prose ol {
+  padding-left: 18px;
+  margin: 4px 0;
+}
+
+.prose li {
+  margin-bottom: 3px;
+}
+
+.prose li::marker {
+  color: var(--text-mute);
+}
+
+.prose p {
+  margin-bottom: 6px;
+}
+
+.prose code {
+  font-family: var(--mono);
+  font-size: .82em;
+  background: var(--bg);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+}
+
+.prose strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.prose pre {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: .82rem;
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+.prose pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 8px 14px;
+  margin: 8px 0;
+  background: var(--accent-l);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: .85rem;
+  color: var(--text-sec);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .83rem;
+  margin: 8px 0;
+}
+
+.prose th {
+  text-align: left;
+  padding: 7px 10px;
+  font-weight: 600;
+  color: var(--text-sec);
+  border-bottom: 2px solid var(--border);
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.prose td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-sec);
+  vertical-align: top;
+}
+
+.prose tr:hover td {
+  background: var(--bg);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+/* ── Mermaid Diagrams ── */
+.prose pre.mermaid {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  margin: 12px 0;
+  text-align: center;
+}
+
+/* ── Subsection ── */
+.subsec {
+  margin-bottom: 20px;
+}
+
+.subsec h3 {
+  font-size: 1.02rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.subsec h4 {
+  font-size: .9rem;
+  font-weight: 600;
+  margin: 10px 0 4px;
+  color: var(--text-sec);
+}
+
+/* ── Acceptance Criteria ── */
+.ac-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0;
+}
+
+.ac-item {
+  display: flex;
+  gap: 10px;
+  padding: 8px 12px;
+  margin-bottom: 5px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  font-size: .84rem;
+  border-left: 3px solid var(--story);
+}
+
+.ac-id {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--story);
+  flex-shrink: 0;
+  font-size: .78rem;
+}
+
+.ac-text {
+  color: var(--text-sec);
+  line-height: 1.6;
+}
+
+/* ── Dependency Tag ── */
+.dep {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: .73rem;
+  font-family: var(--mono);
+  padding: 1px 7px;
+  border-radius: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-mute);
+}
+
+/* ── Callout ── */
+.callout {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  margin: 10px 0;
+  font-size: .84rem;
+  line-height: 1.6;
+}
+
+.callout.risk {
+  background: var(--risk-bg);
+  border-left: 3px solid var(--risk);
+  color: #991b1b;
+}
+
+.callout.info {
+  background: var(--accent-l);
+  border-left: 3px solid var(--accent);
+  color: #1e40af;
+}
+
+.callout-ok {
+  background: var(--done-bg);
+  border-left: 3px solid var(--done);
+  color: #15803d;
+}
+
+.callout svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── Task Toggle ── */
+.task-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .76rem;
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 3px 0;
+}
+
+.task-toggle:hover {
+  color: var(--accent-d);
+}
+
+.task-toggle svg {
+  transition: transform .2s ease;
+}
+
+.task-toggle.open svg {
+  transform: rotate(90deg);
+}
+
+.task-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease;
+}
+
+.task-detail.open {
+  max-height: 2000px;
+}
+
+/* ── Scope Grid ── */
+.scope-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.scope-in {
+  border-left: 3px solid var(--done);
+}
+
+.scope-out {
+  border-left: 3px solid var(--risk);
+}
+
+.scope-label {
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 6px;
+}
+
+.scope-label.in { color: var(--done); }
+.scope-label.out { color: var(--risk); }
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .main {
+    margin-left: 0;
+  }
+  .content {
+    padding: 24px 20px 60px;
+  }
+  .topbar {
+    padding: 12px 20px;
+  }
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .scope-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Print ── */
+@media print {
+  .sidebar, .topbar, .task-toggle {
+    display: none !important;
+  }
+  .main {
+    margin-left: 0;
+  }
+  .card {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+  .task-detail {
+    max-height: none !important;
+  }
+  html {
+    font-size: 12px;
+  }
+}
+</style></head><body>
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-hd"><div class="logo">Quick SDD</div><div class="fid">FEAT-001</div></div>
+<nav class="sidebar-nav"><div class="nav-grp"><div class="nav-grp-title">概览</div>
+<a href="#overview" class="active" onclick="setActive(this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Feature 总览</a></div>
+<div class="nav-grp"><div class="nav-grp-title">需求设计</div>
+<a href="#proposal" onclick="setActive(this)"><span class="dot p"></span>提案概述</a>
+<a href="#prop-问题" onclick="setActive(this)"><span class="dot p"></span>问题</a>
+<a href="#prop-目标" onclick="setActive(this)"><span class="dot p"></span>目标</a>
+<a href="#prop-范围内" onclick="setActive(this)"><span class="dot p"></span>范围内</a>
+<a href="#prop-范围外" onclick="setActive(this)"><span class="dot p"></span>范围外</a>
+<a href="#prop-风险" onclick="setActive(this)"><span class="dot p"></span>风险</a>
+<a href="#prop-待确认问题" onclick="setActive(this)"><span class="dot p"></span>待确认问题</a>
+</div>
+<div class="nav-grp"><div class="nav-grp-title">Story 设计</div>
+<a href="#stories" onclick="setActive(this)"><span class="dot s"></span>故事索引</a>
+<a href="#st-001" onclick="setActive(this)"><span class="dot s"></span>ST-001 建立 claude ag</a>
+<a href="#st-002" onclick="setActive(this)"><span class="dot s"></span>ST-002 提炼 quick-sdd</a>
+<a href="#st-003" onclick="setActive(this)"><span class="dot s"></span>ST-003 设计 quick-sdd</a>
+<a href="#st-004" onclick="setActive(this)"><span class="dot s"></span>ST-004 落地角色 skill 专</a>
+<a href="#st-005" onclick="setActive(this)"><span class="dot s"></span>ST-005 完成验证与安装使用闭环</a>
+</div>
+<div class="nav-grp"><div class="nav-grp-title">架构设计</div>
+<a href="#architecture" onclick="setActive(this)"><span class="dot a"></span>架构概述</a>
+<a href="#arch-背景" onclick="setActive(this)"><span class="dot a"></span>背景</a>
+<a href="#arch-关键决策" onclick="setActive(this)"><span class="dot a"></span>关键决策</a>
+<a href="#arch-模块与接口" onclick="setActive(this)"><span class="dot a"></span>模块与接口</a>
+<a href="#arch-风险与验证影响" onclick="setActive(this)"><span class="dot a"></span>风险与验证影响</a>
+</div>
+<div class="nav-grp"><div class="nav-grp-title">任务清单</div>
+<a href="#tasks" onclick="setActive(this)"><span class="dot t"></span>任务索引</a>
+<a href="#phase-a" onclick="setActive(this)"><span class="dot t"></span>A 研究基线</a>
+<a href="#phase-b" onclick="setActive(this)"><span class="dot t"></span>B 角色能力提炼</a>
+<a href="#phase-c" onclick="setActive(this)"><span class="dot t"></span>C 赋能设计</a>
+<a href="#phase-d" onclick="setActive(this)"><span class="dot t"></span>D 角色落地</a>
+<a href="#phase-e" onclick="setActive(this)"><span class="dot t"></span>E 验证闭环</a>
+</div></nav>
+<div class="sidebar-ft">Generated by Quick SDD</div>
+</aside>
+<div class="main">
+<header class="topbar">
+<button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')" style="display:none;background:none;border:none;cursor:pointer;padding:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<a class="back-btn" href="../../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>所有特性</a>
+<div class="bc">codespec / specs / <strong>FEAT-001</strong></div>
+<span class="pill ready"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Draft</span>
+</header>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg></button>
+<div class="content">
+<section class="hero" id="overview">
+<h1>角色专业能力赋能</h1>
+<div class="hero-meta">
+<span class="badge type">feature</span>
+<span class="badge p1">P1</span>
+<span class="badge">FEAT-001</span>
+<span class="badge">无依赖</span>
+</div>
+</section>
+<div class="stats">
+<div class="stat s1"><div class="n">1</div><div class="l">提案</div></div>
+<div class="stat s2"><div class="n">5</div><div class="l">用户故事</div></div>
+<div class="stat s3"><div class="n">5</div><div class="l">架构章节</div></div>
+<div class="stat s4"><div class="n">14/14</div><div class="l">任务完成</div></div>
+</div>
+<section class="section" id="proposal">
+<div class="sec-hd"><div class="sec-ico p"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><h2>需求设计 · Proposal</h2></div>
+<div class="subsec"><h3>提案</h3>
+<div class="card"><div class="prose"></div></div>
+</div>
+<div class="subsec" id="prop-问题"><h3>问题</h3>
+<div class="card"><div class="prose"><p>&lt;!-- 用 2-5 条要点描述用户问题或业务问题。 --&gt;</p>
+<ul>
+<li><code>quick-sdd</code> 当前的 <code>pm / ra / ta / dev / qa</code> 角色技能主要围绕 SDD 流程编排，缺少各自岗位应具备的专业实践，例如需求分析方法、架构权衡、工程实现准则、测试与验收策略。</li>
+<li><code>D:/code/github/claude</code> 下已经沉淀了多个 agent 项目与角色体系，但这些能力分散在不同仓库、不同目录层级与不同语言版本中，尚未被系统盘点和归纳。</li>
+<li>如果直接复制现成 prompt，而不先做角色映射、重复项去重和能力分层，<code>quick-sdd</code> 很容易失去“轻量、可维护、可安装”的特点。</li>
+<li>目前 <code>quick-sdd</code> 仓库自身还没有承载这项工作的 <code>codespec/</code>，不利于后续按阶段推进、追踪和验证。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-目标"><h3>目标</h3>
+<div class="card"><div class="prose"><p>&lt;!-- 描述期望结果，而不是实现方式。 --&gt;</p>
+<ul>
+<li>系统性盘点 <code>D:/code/github/claude</code> 下所有 agent 项目，建立可追踪的项目清单、角色索引和去重规则。</li>
+<li>提炼可复用的角色优秀实践，并沉淀成面向 <code>quick-sdd</code> 的 <code>PM / RA / TA / DEV / QA</code> 能力矩阵。</li>
+<li>在不破坏 Quick SDD 轻量流程边界的前提下，把专业能力以可维护的方式注入各角色 skill、agent 配置与参考资料。</li>
+<li>为后续安装、使用和验证保留清晰文档与可恢复状态，让这项工作能够按 task 持续推进到完成。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-范围内"><h3>范围内</h3>
+<div class="card"><div class="prose"><p>&lt;!-- 列出这个 feature 在 v1 中会包含的内容。 --&gt;</p>
+<ul>
+<li>盘点 <code>claude</code> 目录下的顶层 agent 项目，包括 <code>agents</code>、<code>everything-claude-code</code>、<code>everything-claude-code-zh</code>、<code>harmony-claude-code</code>、<code>Claude-Code-Game-Studios</code>、<code>edict</code>。</li>
+<li>建立研究产物，包括项目清单、角色能力矩阵、赋能设计说明以及和 <code>quick-sdd</code> 文件结构的映射。</li>
+<li>更新 <code>quick-sdd</code> 中与角色赋能直接相关的文件，例如各角色的 <code>SKILL.md</code>、<code>agents/openai.yaml</code>、必要的 <code>references/</code> 文档以及面向安装/使用者的说明文档。</li>
+<li>保留并强化 Quick SDD 的角色边界，让新增能力服务于 <code>pm -&gt; ra -&gt; ta -&gt; dev -&gt; qa</code> 主流程，而不是替代流程本身。</li>
+<li>为这项改造准备最小验证闭环，包括任务完成标准、文档一致性检查和验收记录。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-范围外"><h3>范围外</h3>
+<div class="card"><div class="prose"><p>&lt;!-- 列出容易混入但不应纳入本 feature 的相邻工作。 --&gt;</p>
+<ul>
+<li>不把 <code>claude</code> 仓库中的全部 agent 或 skill 原样搬运进 <code>quick-sdd</code>。</li>
+<li>不重构 Quick SDD 的整体流程框架、状态机或安装系统，除非这项赋能工作直接需要且有明确证据支持。</li>
+<li>不尝试一次性覆盖所有垂直领域专家能力；本轮只聚焦 <code>quick-sdd</code> 五个核心角色的通用专业能力。</li>
+<li>不新增与当前目标无关的 UI、演示工程或独立自动化系统。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-风险"><h3>风险</h3>
+<div class="card"><div class="prose"><p>&lt;!-- 记录交付、产品、技术或依赖风险。 --&gt;</p>
+<ul>
+<li><code>claude</code> 目录规模较大，存在英文版、中文版和变体项目，若没有去重策略，研究工作容易重复。</li>
+<li><code>quick-sdd</code> 角色与外部项目中的角色并非一一对应，映射时需要避免“硬套角色名”造成职责漂移。</li>
+<li>如果新增实践过多或过长，角色 skill 会变得臃肿，反而削弱 Quick SDD 的轻量优势。</li>
+<li>研究产物若缺少来源追踪，后续维护时难以判断某条实践来自哪个项目、是否仍值得保留。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="prop-待确认问题"><h3>待确认问题</h3>
+<div class="card"><div class="prose"><p>&lt;!-- 可选。如果没有待确认事项，可以删除这一节。 --&gt;</p>
+<ul>
+<li><code>everything-claude-code-zh</code> 与 <code>harmony-claude-code</code> 中哪些内容视为主源、哪些内容仅作为本地化补充，需要在研究阶段显式标记。</li>
+<li>是否需要把部分优秀实践沉淀为共享参考文档，而不是重复写入每个角色 <code>SKILL.md</code>，需要在设计阶段做结构性决策。</li>
+</ul></div></div>
+</div>
+</section>
+<section class="section" id="stories">
+<div class="sec-hd"><div class="sec-ico s"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h2>Story 设计 · User Stories</h2><span class="sec-cnt">5 stories</span></div>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>标题</th><th>优先级</th><th>状态</th><th>依赖</th></tr></thead><tbody>
+<tr><td><strong>ST-001</strong></td><td><a href="#st-001" style="color:var(--text);text-decoration:none">建立 claude agent 项目研究基线</a></td><td>P1</td><td><span class="cst ready">ready</span></td><td>—</td></tr>
+<tr><td><strong>ST-002</strong></td><td><a href="#st-002" style="color:var(--text);text-decoration:none">提炼 quick-sdd 角色能力矩阵</a></td><td>P1</td><td><span class="cst ready">ready</span></td><td>—</td></tr>
+<tr><td><strong>ST-003</strong></td><td><a href="#st-003" style="color:var(--text);text-decoration:none">设计 quick-sdd 角色赋能落地方案</a></td><td>P1</td><td><span class="cst ready">ready</span></td><td>—</td></tr>
+<tr><td><strong>ST-004</strong></td><td><a href="#st-004" style="color:var(--text);text-decoration:none">落地角色 skill 专业能力增强</a></td><td>P1</td><td><span class="cst ready">ready</span></td><td>—</td></tr>
+<tr><td><strong>ST-005</strong></td><td><a href="#st-005" style="color:var(--text);text-decoration:none">完成验证与安装使用闭环</a></td><td>P1</td><td><span class="cst ready">ready</span></td><td>—</td></tr>
+</tbody></table></div>
+<div class="card" id="st-001">
+<div class="card-hd"><span class="cid s">ST-001</span><span class="ctitle">建立 claude agent 项目研究基线</span><span class="cst ready">ready</span></div>
+<div class="prose"><p>&lt;!-- 尽量使用标准的 “作为 / 我想要 / 以便” 结构。 --&gt;</p>
+<p>作为 quick-sdd 维护者，我希望先系统盘点 <code>D:/code/github/claude</code> 下所有 agent 项目和角色载体，以便后续赋能建立在完整、去重、可追踪的研究基线上。</p></div>
+<h4 style="font-size:.88rem;font-weight:600;margin:10px 0 4px;color:var(--text-sec)">验收标准</h4>
+<ul class="ac-list">
+<li class="ac-item"><span class="ac-id">AC-1</span><span class="ac-text">Given `D:/code/github/claude` 的六个顶层项目，when 研究基线完成，then 每个项目的 agent/skill/rule/command 主要承载目录和核心说明文档都被记录。</span></li>
+<li class="ac-item"><span class="ac-id">AC-2</span><span class="ac-text">Given 英文版、中文版和变体项目并存，when 建立项目清单，then 重复来源、补充来源和主源关系被显式标注。</span></li>
+<li class="ac-item"><span class="ac-id">AC-3</span><span class="ac-text">Given 后续还要继续做能力提炼，when 基线文档交付，then 它能够直接支持按角色继续抽取优秀实践，而不是重新盘点目录。</span></li>
+</ul>
+</div>
+<div class="card" id="st-002">
+<div class="card-hd"><span class="cid s">ST-002</span><span class="ctitle">提炼 quick-sdd 角色能力矩阵</span><span class="cst ready">ready</span></div>
+<div class="prose"><p>作为 quick-sdd 维护者，我希望把外部 agent 项目中的优秀实践提炼成面向 <code>PM / RA / TA / DEV / QA</code> 的能力矩阵，以便每个角色都有清晰的专业职责、方法和质量门槛。</p></div>
+<h4 style="font-size:.88rem;font-weight:600;margin:10px 0 4px;color:var(--text-sec)">验收标准</h4>
+<ul class="ac-list">
+<li class="ac-item"><span class="ac-id">AC-1</span><span class="ac-text">Given 已完成的项目研究基线，when 角色提炼完成，then `PM / RA / TA / DEV / QA` 每个角色都有对应的优秀实践清单。</span></li>
+<li class="ac-item"><span class="ac-id">AC-2</span><span class="ac-text">Given 不同项目的角色命名差异较大，when 输出能力矩阵，then 映射基于职责而不是字面名称，并保留来源追踪。</span></li>
+<li class="ac-item"><span class="ac-id">AC-3</span><span class="ac-text">Given Quick SDD 需要轻量，when 能力矩阵完成，then 区分“必须内置”“可引用参考”“不应引入”的实践层级。</span></li>
+</ul>
+</div>
+<div class="card" id="st-003">
+<div class="card-hd"><span class="cid s">ST-003</span><span class="ctitle">设计 quick-sdd 角色赋能落地方案</span><span class="cst ready">ready</span></div>
+<div class="prose"><p>作为 quick-sdd 维护者，我希望先设计能力注入方案和文件映射规则，以便新增专业能力时保持仓库结构清晰、安装路径稳定、角色边界不被打乱。</p></div>
+<h4 style="font-size:.88rem;font-weight:600;margin:10px 0 4px;color:var(--text-sec)">验收标准</h4>
+<ul class="ac-list">
+<li class="ac-item"><span class="ac-id">AC-1</span><span class="ac-text">Given 已产出的角色能力矩阵，when 设计完成，then 能明确哪些实践进入 `SKILL.md`、哪些进入 `agents/openai.yaml`、哪些进入共享参考文档。</span></li>
+<li class="ac-item"><span class="ac-id">AC-2</span><span class="ac-text">Given 角色边界是 Quick SDD 的核心约束，when 设计赋能方案，then 新增专业实践不会替代既有的 `pm -&gt; ra -&gt; ta -&gt; dev -&gt; qa` 分工。</span></li>
+<li class="ac-item"><span class="ac-id">AC-3</span><span class="ac-text">Given 仓库需要可维护，when 设计文档完成，then 对新增/更新文件、复用关系和验证方式有清晰说明。</span></li>
+</ul>
+</div>
+<div class="card" id="st-004">
+<div class="card-hd"><span class="cid s">ST-004</span><span class="ctitle">落地角色 skill 专业能力增强</span><span class="cst ready">ready</span></div>
+<div class="prose"><p>作为 quick-sdd 维护者，我希望把研究和设计结果写入各角色 skill，使 <code>pm / ra / ta / dev / qa</code> 在遵守 SDD 流程的同时，也具备本职工作的专业方法和高质量实践。</p></div>
+<h4 style="font-size:.88rem;font-weight:600;margin:10px 0 4px;color:var(--text-sec)">验收标准</h4>
+<ul class="ac-list">
+<li class="ac-item"><span class="ac-id">AC-1</span><span class="ac-text">Given 赋能方案已确认，when 角色文件更新完成，then 五个核心角色都获得与其职责匹配的专业实践增强。</span></li>
+<li class="ac-item"><span class="ac-id">AC-2</span><span class="ac-text">Given Quick SDD 仍需轻量，when 修改完成，then 共享内容优先被抽到可复用参考文档，避免多处重复。</span></li>
+<li class="ac-item"><span class="ac-id">AC-3</span><span class="ac-text">Given 角色执行边界很重要，when 文件改完，then 新 prompt 和 agent 配置仍明确各角色不能越权代替其他角色。</span></li>
+</ul>
+</div>
+<div class="card" id="st-005">
+<div class="card-hd"><span class="cid s">ST-005</span><span class="ctitle">完成验证与安装使用闭环</span><span class="cst ready">ready</span></div>
+<div class="prose"><p>作为 quick-sdd 维护者，我希望在角色赋能完成后补齐验证和说明文档，以便这套能力可以被安装、理解、使用，并在后续维护中持续复用。</p></div>
+<h4 style="font-size:.88rem;font-weight:600;margin:10px 0 4px;color:var(--text-sec)">验收标准</h4>
+<ul class="ac-list">
+<li class="ac-item"><span class="ac-id">AC-1</span><span class="ac-text">Given 角色能力增强已经落地，when 验证完成，then 关键文档、安装清单和角色说明与实际实现保持一致。</span></li>
+<li class="ac-item"><span class="ac-id">AC-2</span><span class="ac-text">Given 这是一个分阶段推进的 feature，when 验证报告完成，then 能清楚说明已完成内容、残留风险和后续维护建议。</span></li>
+<li class="ac-item"><span class="ac-id">AC-3</span><span class="ac-text">Given 未来还会继续演进，when feature 结束，then `codespec` 中保留足够的可追踪信息支撑后续续跑。</span></li>
+</ul>
+</div>
+</section>
+<section class="section" id="architecture">
+<div class="sec-hd"><div class="sec-ico a"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div><h2>架构设计 · Architecture</h2></div>
+<div class="subsec"><h3>架构设计</h3>
+<div class="card"><div class="prose"></div></div>
+</div>
+<div class="subsec" id="arch-背景"><h3>背景</h3>
+<div class="card"><div class="prose"><ul>
+<li>Quick SDD 通过 <code>codespec/</code> 保存跨角色共享事实，通过独立 role skill 保存角色行为约束。</li>
+<li>当前调整把文档责任从“前置角色代写后置产物”改成责任链：RA 写 proposal，TA 写 stories/architecture 并审 task，DEV 写 tasks/实现，QA 审全链路，RA 在 QA 之后做最终需求验收。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="arch-关键决策"><h3>关键决策</h3>
+<div class="card"><div class="prose"><div class="table-wrap"><table>
+<thead><tr>
+<th>ID</th>
+<th>决策</th>
+<th>原因</th>
+<th>影响</th>
+</tr></thead><tbody>
+<tr>
+<td>AD-001</td>
+<td>新增 <code>architecture.md</code> 作为 feature 级技术设计事实源</td>
+<td>原流程缺少独立架构设计文档，架构约束容易散落在 story 或 task 中</td>
+<td>DEV 的 task 需要引用架构决策，QA 审计时检查 architecture 与 tasks 是否一致</td>
+</tr>
+<tr>
+<td>AD-002</td>
+<td><code>tasks.md</code> 主责任人改为 DEV，TA 负责审计</td>
+<td>task 是执行计划和 ACL 载体，更接近实现责任；但需要 TA 防止边界漂移</td>
+<td>runtime 允许 DEV 写 tasks.md，TA 可写审计记录</td>
+</tr>
+<tr>
+<td>AD-003</td>
+<td>resolver 支持 optional task 范围</td>
+<td>planning 阶段 DEV 需要写 tasks.md，但尚未有 active task</td>
+<td>无 active task 时 DEV 只能写 tasks.md；有 active task 时再展开代码写范围</td>
+</tr>
+<tr>
+<td>AD-004</td>
+<td>新增 <code>acceptance.md</code> 和 <code>accepting</code> 阶段</td>
+<td>QA 的质量裁决不能替代 RA 对原始需求和用户价值的最终判断</td>
+<td>QA pass/conditional_pass 后路由到 RA；RA 写最终接受、要求修改或拒绝结论</td>
+</tr>
+</tbody></table></div></div></div>
+</div>
+<div class="subsec" id="arch-模块与接口"><h3>模块与接口</h3>
+<div class="card"><div class="prose"><ul>
+<li><code>skills/quick-sdd/templates/architecture.template.md</code>：新 feature 的架构文档模板。</li>
+<li><code>skills/quick-sdd/scripts/init_codespec.py</code>：初始化 feature 时生成 <code>architecture.md</code>。</li>
+<li><code>skills/quick-sdd/templates/acceptance.template.md</code>：新 feature 的 RA 最终验收模板。</li>
+<li><code>codespec/runtime/role-policy.yaml</code> 与模板：定义 RA/TA/DEV/QA 的新读写边界。</li>
+<li><code>skills/quick-sdd/scripts/resolve_dispatch.py</code>：解释 optional resolver。</li>
+<li><code>skills/quick-sdd/scripts/resume_orchestrator.py</code>：按新阶段推荐下一角色；QA 通过后进入 <code>accepting</code> 并派给 RA。</li>
+</ul></div></div>
+</div>
+<div class="subsec" id="arch-风险与验证影响"><h3>风险与验证影响</h3>
+<div class="card"><div class="prose"><ul>
+<li>DEV 写自己的 task 可能扩大实现范围；由 TA 的 <code>task_review</code> 阶段和 QA 全链路审计兜底。</li>
+<li>新阶段 <code>architecture</code>、<code>task_review</code> 与 <code>accepting</code> 需要安装者理解；README、AGENT 模板和 role skill 必须同步说明。</li>
+<li>旧 feature 没有 architecture 时，QA 审计会发现文档缺口；新模板和初始化脚本应保证后续 feature 默认具备该文档。</li>
+<li>旧 feature 没有 acceptance 时，RA 最终验收缺少落盘位置；新模板和初始化脚本应保证后续 feature 默认具备该文档。</li>
+</ul></div></div>
+</div>
+</section>
+<section class="section" id="tasks">
+<div class="sec-hd"><div class="sec-ico t"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h2>任务清单 · Tasks</h2><span class="sec-cnt">14 tasks · 14 done</span></div>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>Story</th><th>标题</th><th>状态</th><th>依赖</th><th>负责</th></tr></thead><tbody>
+<tr><td><strong>T-001</strong></td><td>ST-001</td><td>盘点 claude 顶层 agent 项目与主要能力承载面</td><td><span class="cst done">done</span></td><td>—</td><td>dev</td></tr>
+<tr><td><strong>T-002</strong></td><td>ST-001</td><td>建立项目去重规则与角色研究顺序</td><td><span class="cst done">done</span></td><td><span class="dep">T-001</span></td><td>dev</td></tr>
+<tr><td><strong>T-003</strong></td><td>ST-002</td><td>提炼编排与治理类角色优秀实践</td><td><span class="cst done">done</span></td><td><span class="dep">T-002</span></td><td>dev</td></tr>
+<tr><td><strong>T-004</strong></td><td>ST-002</td><td>提炼需求、架构、工程、测试类角色优秀实践</td><td><span class="cst done">done</span></td><td><span class="dep">T-002</span></td><td>dev</td></tr>
+<tr><td><strong>T-005</strong></td><td>ST-002</td><td>形成 quick-sdd 五角角色能力矩阵</td><td><span class="cst done">done</span></td><td><span class="dep">T-003</span> <span class="dep">T-004</span></td><td>dev</td></tr>
+<tr><td><strong>T-006</strong></td><td>ST-003</td><td>审计 quick-sdd 当前角色 skill 缺口</td><td><span class="cst done">done</span></td><td><span class="dep">T-005</span></td><td>dev</td></tr>
+<tr><td><strong>T-007</strong></td><td>ST-003</td><td>设计角色赋能分层与文件映射方案</td><td><span class="cst done">done</span></td><td><span class="dep">T-006</span></td><td>dev</td></tr>
+<tr><td><strong>T-008</strong></td><td>ST-004</td><td>落地 PM 角色的编排与治理增强</td><td><span class="cst done">done</span></td><td><span class="dep">T-007</span></td><td>dev</td></tr>
+<tr><td><strong>T-009</strong></td><td>ST-004</td><td>落地 RA 与 TA 角色的分析与架构增强</td><td><span class="cst done">done</span></td><td><span class="dep">T-007</span></td><td>dev</td></tr>
+<tr><td><strong>T-010</strong></td><td>ST-004</td><td>落地 DEV 角色的工程实践增强</td><td><span class="cst done">done</span></td><td><span class="dep">T-007</span></td><td>dev</td></tr>
+<tr><td><strong>T-011</strong></td><td>ST-004</td><td>落地 QA 角色的验证与质量门禁增强</td><td><span class="cst done">done</span></td><td><span class="dep">T-007</span></td><td>dev</td></tr>
+<tr><td><strong>T-012</strong></td><td>ST-004</td><td>补齐共享参考资料与复用结构</td><td><span class="cst done">done</span></td><td><span class="dep">T-008</span> <span class="dep">T-009</span> <span class="dep">T-010</span> <span class="dep">T-011</span></td><td>dev</td></tr>
+<tr><td><strong>T-013</strong></td><td>ST-005</td><td>更新 README 与安装使用说明</td><td><span class="cst done">done</span></td><td><span class="dep">T-012</span></td><td>dev</td></tr>
+<tr><td><strong>T-014</strong></td><td>ST-005</td><td>完成一致性检查与 validation 报告</td><td><span class="cst done">done</span></td><td><span class="dep">T-013</span></td><td>qa</td></tr>
+</tbody></table></div>
+<div class="subsec" id="phase-a"><h3>阶段 A · 研究基线</h3>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-001</span><span class="ctitle">盘点 claude 顶层 agent 项目与主要能力承载面</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>建立 <code>claude</code> 六个顶层项目的研究总表。</li>
+<li>明确每个项目用什么目录和文档承载 agent 角色、skills、rules 与 orchestration 机制。</li>
+<li>为后续角色提炼准备统一入口，而不是在多个仓库间重复摸索。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li><code>research-inventory.md</code> 中的项目总览表。</li>
+<li>每个项目的主要研究入口、能力侧重点和与 <code>quick-sdd</code> 的关联说明。</li>
+<li>初始的主源/变体/翻译关系标记。</li>
+</ul>
+<h4>备注</h4><ul>
+<li><code>read_paths</code> 和 <code>write_paths</code> 使用 glob 路径模式。</li>
+<li>不要在这里重复完整的验收标准。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-002</span><span class="ctitle">建立项目去重规则与角色研究顺序</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>避免 <code>everything-claude-code</code>、<code>everything-claude-code-zh</code>、<code>harmony-claude-code</code> 之间出现重复研究。</li>
+<li>先研究最能提供角色方法论的项目，再研究补充型项目。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>一份明确的去重规则。</li>
+<li>一份按角色提炼的研究顺序说明。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>去重规则优先基于职责和内容来源，而不是项目名称。</li>
+</ul>
+</div></div></div>
+</div>
+<div class="subsec" id="phase-b"><h3>阶段 B · 角色能力提炼</h3>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-003</span><span class="ctitle">提炼编排与治理类角色优秀实践</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>从 <code>edict</code>、<code>agents</code>、<code>CCGS</code>、<code>ECC</code> 中抽取适用于 <code>PM</code> 的编排治理实践。</li>
+<li>识别哪些机制适合 Quick SDD，哪些过重只应作为参考。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li><code>role-capability-matrix.md</code> 中的 PM 相关章节。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>优先关注角色分层、派发协议、审议机制、恢复策略和质量门禁。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-004</span><span class="ctitle">提炼需求、架构、工程、测试类角色优秀实践</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>为 <code>RA / TA / DEV / QA</code> 提炼职责导向而非名称导向的专业实践。</li>
+<li>把测试驱动、安全审查、架构评审、验收门禁等方法纳入统一矩阵。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li><code>role-capability-matrix.md</code> 中除 PM 外的角色章节。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>优先关注能和 Quick SDD 主流程自然耦合的实践。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-005</span><span class="ctitle">形成 quick-sdd 五角角色能力矩阵</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>将分散实践收敛成 <code>quick-sdd</code> 可以直接消费的统一矩阵。</li>
+<li>输出角色边界、共享能力和角色专属能力的分层结果。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>完整的 <code>role-capability-matrix.md</code>。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>这是从研究进入设计的关口任务。</li>
+</ul>
+</div></div></div>
+</div>
+<div class="subsec" id="phase-c"><h3>阶段 C · 赋能设计</h3>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-006</span><span class="ctitle">审计 quick-sdd 当前角色 skill 缺口</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>将 <code>quick-sdd</code> 现状与目标能力矩阵做差异分析。</li>
+<li>找出适合放进角色 prompt、agent manifest、共享 reference 的内容边界。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li><code>enablement-design.md</code> 中的差距分析章节。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>缺口分析必须基于现有文件，而不是凭印象判断。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-007</span><span class="ctitle">设计角色赋能分层与文件映射方案</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>设计“共享参考文档 + 角色 skill + agent manifest”的分层方案。</li>
+<li>明确后续实现任务的写入范围和顺序。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>完整的 <code>enablement-design.md</code>。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>设计结果要能直接指导实施任务，不再需要二次拆解。</li>
+</ul>
+</div></div></div>
+</div>
+<div class="subsec" id="phase-d"><h3>阶段 D · 角色落地</h3>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-008</span><span class="ctitle">落地 PM 角色的编排与治理增强</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>让 PM 在保留路由职责的前提下，具备更成熟的编排、升级、阻塞处理和恢复策略。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>更新后的 PM skill 与 agent 入口描述。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>避免把 PM 写成“大包大揽”的全能角色。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-009</span><span class="ctitle">落地 RA 与 TA 角色的分析与架构增强</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>为 RA 增补需求澄清、价值切片、风险识别等方法。</li>
+<li>为 TA 增补架构权衡、任务边界、验证设计和依赖拆解方法。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>更新后的 RA/TA skill 与 agent 入口描述。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>RA 负责需求，TA 负责技术设计，不交叉越权。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-010</span><span class="ctitle">落地 DEV 角色的工程实践增强</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>为 DEV 增补实现前计划、TDD、验证证据、代码质量和安全实践。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>更新后的 DEV skill 与 agent 入口描述。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>DEV 的增强必须服务于单 task 边界，不扩大写权限。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-011</span><span class="ctitle">落地 QA 角色的验证与质量门禁增强</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>为 QA 增补基于证据的质量验证、风险分类、回流建议和质量门禁策略。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>更新后的 QA skill 与 agent 入口描述。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>QA 负责裁决，不替代 DEV/TA 直接改实现。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-012</span><span class="ctitle">补齐共享参考资料与复用结构</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>把多角色共用的优秀实践沉淀为共享参考资料，减少重复复制。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>新增或更新的共享 reference 文档。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>共享资料是复用层，不应取代角色 skill 的执行指令。</li>
+</ul>
+</div></div></div>
+</div>
+<div class="subsec" id="phase-e"><h3>阶段 E · 验证闭环</h3>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-013</span><span class="ctitle">更新 README 与安装使用说明</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>让使用者知道角色 skill 已经从“流程型”升级为“流程 + 专业实践型”。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>更新后的仓库说明与安装清单。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>只有在确实需要时才调整安装清单。</li>
+</ul>
+</div></div></div>
+<div class="card">
+<div class="card-hd"><span class="cid t">T-014</span><span class="ctitle">完成一致性检查与 validation 报告</span><span class="cst done">done</span>
+<button class="task-toggle" onclick="toggleDetail(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> 详情</button></div>
+<div class="task-detail"><div class="prose">
+<h4>目标</h4><ul>
+<li>检查研究、设计、实现和说明文档是否闭环。</li>
+<li>形成 QA 质量裁决与残留风险说明，作为 RA 最终验收输入。</li>
+</ul>
+<h4>交付物</h4><ul>
+<li>更新后的 <code>validation-report.md</code>。</li>
+</ul>
+<h4>备注</h4><ul>
+<li>QA 结论要基于文件事实和验证证据。</li>
+</ul>
+</div></div></div>
+</div>
+</section>
+</div></div>
+<script>/* Quick SDD Feature Overview — Canonical JS Template
+ * Source of truth: skills/quick-sdd/templates/html/feature-overview.js
+ */
+function setActive(el) {
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+  if (window.innerWidth <= 860) document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleDetail(btn) {
+  btn.classList.toggle('open');
+  btn.closest('.card').querySelector('.task-detail').classList.toggle('open');
+}
+
+const secs = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('.sidebar-nav a[href^="#"]');
+const obs = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.getAttribute('id');
+      links.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#' + id); });
+    }
+  });
+}, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+secs.forEach(s => obs.observe(s));
+
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => { backTop.classList.toggle('show', window.scrollY > 400); }, { passive: true });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"neutral",securityLevel:"loose"});</script>
+<style>@media(max-width:860px){.menu-btn{display:block!important}}</style>
+</body></html>

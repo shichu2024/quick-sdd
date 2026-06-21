@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Quick SDD Specs</title>
+<style>/* Quick SDD Specs Index — Canonical CSS Template
+ * Source of truth: skills/quick-sdd/templates/html/index.css
+ * Any project using quick-sdd reads from this file to ensure style consistency.
+ * Edit this file to change the index page design; do NOT edit the Python script's CSS string.
+ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f7f8fb;
+  --surface: #fff;
+  --border: #dfe4ec;
+  --text: #20242c;
+  --muted: #667085;
+  --accent: #3158d4;
+  --accent-bg: #eef2ff;
+  --done: #15803d;
+  --draft: #64748b;
+  --shadow: 0 1px 3px rgba(16, 24, 40, .08);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.6;
+}
+
+header {
+  padding: 24px 40px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 32px 64px;
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+  letter-spacing: 0;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: .88rem;
+}
+
+/* ── Controls ── */
+.controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 20px 0 16px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px 12px 8px 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: .88rem;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color .15s;
+}
+
+.search-box input:focus {
+  border-color: var(--accent);
+}
+
+.search-box svg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.filter-group {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: .78rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  border-color: #b8c3d8;
+  color: var(--text);
+}
+
+.filter-btn.active {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sort-select {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: .82rem;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+}
+
+.result-info {
+  font-size: .82rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  min-height: 156px;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.card:hover {
+  border-color: #b8c3d8;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, .1);
+}
+
+.card-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.id {
+  font-family: "SF Mono", Consolas, monospace;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: .78rem;
+}
+
+.status {
+  margin-left: auto;
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: .74rem;
+  background: #f1f5f9;
+  color: var(--draft);
+}
+
+.status.done, .status.accepted, .status.pass {
+  background: #ecfdf5;
+  color: var(--done);
+}
+
+.status.ready, .status.validating, .status.draft {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.desc {
+  font-size: .86rem;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.foot {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.tag {
+  font-size: .74rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1px 7px;
+}
+
+/* ── Pagination ── */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: .84rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.page-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.page-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.page-btn:disabled {
+  opacity: .4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.page-ellipsis {
+  padding: 0 4px;
+  color: var(--muted);
+  font-size: .84rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+.empty-state svg {
+  margin-bottom: 12px;
+  opacity: .4;
+}
+
+.empty-state p {
+  font-size: .95rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  header {
+    padding: 20px 20px 16px;
+  }
+
+  main {
+    padding: 20px 16px 48px;
+  }
+
+  .controls {
+    gap: 8px;
+  }
+
+  .search-box {
+    max-width: none;
+    min-width: 0;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Quick SDD Specs</h1>
+  <div class="meta">项目规格站点入口 · quick-sdd · Generated 2026-06-21T08:15:24Z</div>
+</header>
+<main>
+  <div class="controls">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="搜索特性名称、ID 或描述..." autocomplete="off">
+    </div>
+    <div class="filter-group" id="statusFilter">
+      <button class="filter-btn active" data-status="all">全部</button>
+      <button class="filter-btn" data-status="done">已完成</button>
+      <button class="filter-btn" data-status="ready">进行中</button>
+      <button class="filter-btn" data-status="draft">草稿</button>
+    </div>
+    <select class="sort-select" id="sortSelect">
+      <option value="id-asc">ID 升序</option>
+      <option value="id-desc">ID 降序</option>
+      <option value="priority">优先级</option>
+      <option value="status">状态</option>
+      <option value="title">名称</option>
+    </select>
+  </div>
+  <div class="result-info" id="resultInfo"></div>
+  <section class="grid" id="grid"></section>
+  <div class="pagination" id="pagination"></div>
+</main>
+<script>
+const FEATURES=[{"id": "FEAT-001", "title": "角色专业能力赋能", "status": "done", "type": "enhancement", "priority": "P1", "description": "`quick-sdd` 当前的 `pm / ra / ta / dev / qa` 角色技能主要围绕 SDD 流程编排，缺少各自岗位应具备的专业实践，例如需求分析方法、架构权衡、工程实现准则、测试与验收策略。 `D:/code/github/claude` 下已经沉淀了多个 agent 项目与角色体系，但这些能力分散在不同仓库、不同目录层级与不同语言版本中，尚未被系统盘点和归纳。 如果直接复制现成 prompt，而不先做角色映射、重复项去重和能力分层，`quick-sdd` ", "href": "specs/FEAT-001-角色专业能力赋能/overview.html"}, {"id": "FEAT-002", "title": "HTML 规格站点生成", "status": "validating", "type": "enhancement", "priority": "P1", "description": "Quick SDD 的规格产物目前主要是 Markdown，适合 diff 和协作，但不适合直接作为浏览式规格站点阅读。 已有 `generate_overview.py` 雏形只能生成单个 feature 的 `overview.html`，尚未接入初始化流程、AGENTS 开关、项目级索引或存量转换命令。 用户希望 HTML 生成默认开启，但可以在 `AGENTS.md` 中关闭自动生成，并保留手动命令触发能力。 后续会提供正式 HTML 模板，因此当前机制需要先固定生成", "href": "specs/FEAT-002-html规格站点生成/overview.html"}];
+const PER_PAGE=24;
+let currentPage=1;
+let filtered=[...FEATURES];
+
+function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+function statusClass(s){
+  const v=s.toLowerCase();
+  if(['done','accepted','pass'].includes(v))return 'done';
+  if(['ready','validating','draft'].includes(v))return 'ready';
+  return '';
+}
+
+function priorityOrder(p){
+  const m={'P0':0,'P1':1,'P2':2,'P3':3,'P4':4};
+  return m[p]??99;
+}
+
+function applyFilters(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  const statusBtn=document.querySelector('#statusFilter .filter-btn.active');
+  const status=statusBtn?statusBtn.dataset.status:'all';
+  const sort=document.getElementById('sortSelect').value;
+
+  filtered=FEATURES.filter(f=>{
+    if(status!=='all'){
+      const sc=statusClass(f.status);
+      if(status==='done'&&sc!=='done')return false;
+      if(status==='ready'&&sc!=='ready')return false;
+      if(status==='draft'&&sc!=='')return false;
+    }
+    if(q){
+      const hay=(f.id+' '+f.title+' '+f.description+' '+f.type+' '+f.priority).toLowerCase();
+      if(!hay.includes(q))return false;
+    }
+    return true;
+  });
+
+  if(sort==='id-asc')filtered.sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}));
+  else if(sort==='id-desc')filtered.sort((a,b)=>b.id.localeCompare(a.id,undefined,{numeric:true}));
+  else if(sort==='priority')filtered.sort((a,b)=>priorityOrder(a.priority)-priorityOrder(b.priority));
+  else if(sort==='status')filtered.sort((a,b)=>statusClass(a.status).localeCompare(statusClass(b.status)));
+  else if(sort==='title')filtered.sort((a,b)=>a.title.localeCompare(b.title,'zh'));
+
+  currentPage=1;
+  render();
+}
+
+function render(){
+  const grid=document.getElementById('grid');
+  const info=document.getElementById('resultInfo');
+  const pag=document.getElementById('pagination');
+  const total=filtered.length;
+  const totalPages=Math.max(1,Math.ceil(total/PER_PAGE));
+  if(currentPage>totalPages)currentPage=totalPages;
+  const start=(currentPage-1)*PER_PAGE;
+  const pageItems=filtered.slice(start,start+PER_PAGE);
+
+  info.textContent=total===FEATURES.length
+    ?`共 ${total} 个特性`
+    :`显示 ${total} / ${FEATURES.length} 个特性`;
+
+  if(total===0){
+    grid.innerHTML='<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>没有找到匹配的特性</p></div>';
+    pag.innerHTML='';
+    return;
+  }
+
+  grid.innerHTML=pageItems.map(f=>`<a class="card" href="${escHtml(f.href)}">
+<div class="card-head"><span class="id">${escHtml(f.id)}</span><span class="status ${statusClass(f.status)}">${escHtml(f.status)}</span></div>
+<div class="title">${escHtml(f.title)}</div>
+<div class="desc">${escHtml(f.description)}</div>
+<div class="foot"><span class="tag">${escHtml(f.type)}</span><span class="tag">${escHtml(f.priority)}</span></div>
+</a>`).join('');
+
+  if(totalPages<=1){pag.innerHTML='';return;}
+
+  let btns=[];
+  btns.push(`<button class="page-btn" ${currentPage===1?'disabled':''} onclick="goPage(${currentPage-1})">‹</button>`);
+
+  const range=[];
+  if(totalPages<=7){for(let i=1;i<=totalPages;i++)range.push(i);}
+  else{
+    range.push(1);
+    if(currentPage>3)range.push('...');
+    for(let i=Math.max(2,currentPage-1);i<=Math.min(totalPages-1,currentPage+1);i++)range.push(i);
+    if(currentPage<totalPages-2)range.push('...');
+    range.push(totalPages);
+  }
+  for(const p of range){
+    if(p==='...')btns.push('<span class="page-ellipsis">…</span>');
+    else btns.push(`<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`);
+  }
+  btns.push(`<button class="page-btn" ${currentPage===totalPages?'disabled':''} onclick="goPage(${currentPage+1})">›</button>`);
+  pag.innerHTML=btns.join('');
+}
+
+function goPage(p){currentPage=p;render();window.scrollTo({top:0,behavior:'smooth'});}
+
+document.getElementById('searchInput').addEventListener('input',applyFilters);
+document.getElementById('sortSelect').addEventListener('change',applyFilters);
+document.getElementById('statusFilter').addEventListener('click',e=>{
+  const btn=e.target.closest('.filter-btn');
+  if(!btn)return;
+  document.querySelectorAll('#statusFilter .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+});
+
+applyFilters();
+</script>
+</body>
+</html>
