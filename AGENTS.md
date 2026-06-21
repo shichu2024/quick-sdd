@@ -54,6 +54,20 @@
 3. `AGENTS.md` 是项目级协作入口，`codespec/` 是项目级规格工作区，二者必须同时存在并互相引用。
 4. 角色协议不再维护在主 skill 的 `agents/*.md` 中；真正可发现的角色定义应以独立 skill 目录下的 `SKILL.md` 为准。
 
+## HTML 规格站点
+
+- 默认开启：生成或初始化规格文档时，同时生成 feature 级 `overview.html` 与项目级 `codespec/index.html`。
+- 如需关闭自动生成，在下方配置块中将 `enabled` 改为 `false`；关闭后仍可通过命令手动生成。
+- 手动转换存量规格：`python skills/quick-sdd/scripts/generate_overview.py --repo-root . --all`。
+
+<!-- QUICK-SDD-HTML-START -->
+```yaml
+quick_sdd:
+  html_export:
+    enabled: true
+```
+<!-- QUICK-SDD-HTML-END -->
+
 ## 路由规则
 
 1. `pm` 是唯一的路由角色。
@@ -134,3 +148,35 @@ next_action:
 2. 优先使用稳定 ID：`FEAT-001`、`ST-001`、`T-001`。
 3. 状态值保持在约定枚举内。
 4. 实际证据记录在 `validation-report.md` 中，不重复写回 task ACL；最终需求验收决定记录在 `acceptance.md`。
+
+
+<!-- CAT-CAFE-GOVERNANCE-START -->
+> Pack version: 1.4.0 | Provider: codex
+
+## Cat Cafe Governance Rules (Auto-managed)
+
+### Hard Constraints (immutable)
+- **Public local defaults**: use frontend 3003 and API 3004 to avoid colliding with another local runtime.
+- **Redis port 6379** is Cat Cafe's production Redis. Never connect to it from external projects. Use 6398 for dev/test.
+- **No self-review**: The same individual cannot review their own code. Cross-family review preferred.
+- **Identity is constant**: Never impersonate another cat. Identity is a hard constraint.
+
+### Collaboration Standards
+- A2A handoff uses five-tuple: What / Why / Tradeoff / Open Questions / Next Action
+- Vision Guardian: Read original requirements before starting. AC completion ≠ feature complete.
+- Review flow: quality-gate → request-review → receive-review → merge-gate
+- Skills are available via symlinked cat-cafe-skills/ — load the relevant skill before each workflow step
+- Shared rules: See cat-cafe-skills/refs/shared-rules.md for full collaboration contract
+
+### Quality Discipline (overrides "try simplest approach first")
+- **Bug: find root cause before fixing**. No guess-and-patch. Steps: reproduce → logs → call chain → confirm root cause → fix
+- **Uncertain direction: stop → search → ask → confirm → then act**. Never "just try it first"
+- **"Done" requires evidence** (tests pass / screenshot / logs). Bug fix = red test first, then green
+
+### Knowledge Engineering
+- Documents use YAML frontmatter (feature_ids, topics, doc_kind, created)
+- Three-layer info architecture: CLAUDE.md (≤100 lines) → Skills (on-demand) → refs/
+- Backlog: BACKLOG.md (hot) → Feature files (warm) → raw docs (cold)
+- Feature lifecycle: kickoff → discussion → implementation → review → completion
+- SOP: See docs/SOP.md for the 6-step workflow
+<!-- CAT-CAFE-GOVERNANCE-END -->

@@ -6,8 +6,8 @@
 
 - 项目：quick-sdd
 - 负责人：
-- 当前激活的功能：FEAT-001-角色专业能力赋能
-- 最后更新时间：2026-04-18T16:30:58+08:00
+- 当前激活的功能：FEAT-002-html规格站点生成
+- 最后更新时间：2026-06-18T01:24:40+08:00
 
 ## 术语
 
@@ -32,6 +32,18 @@
 | ID | 标题 | 状态 | 优先级 | 路径 |
 |----|------|------|--------|------|
 | FEAT-001 | 角色专业能力赋能 | done | P1 | specs/FEAT-001-角色专业能力赋能/ |
+| FEAT-002 | HTML 规格站点生成 | validating | P1 | specs/FEAT-002-html规格站点生成/ |
+
+## HTML 规格站点
+
+- 项目级入口：`codespec/index.html`
+- Feature 级入口：`codespec/specs/<feature>/overview.html`
+- 自动生成默认开启，可在项目根目录 `AGENTS.md` 的 `quick_sdd.html_export.enabled` 中关闭。
+- 手动转换存量规格：
+
+```bash
+python skills/quick-sdd/scripts/generate_overview.py --repo-root . --all
+```
 
 ## 状态说明
 

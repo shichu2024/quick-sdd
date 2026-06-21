@@ -54,6 +54,20 @@
 3. `AGENTS.md` 是项目级协作入口，`codespec/` 是项目级规格工作区，二者必须同时存在并互相引用。
 4. 角色协议不再维护在主 skill 的 `agents/*.md` 中；真正可发现的角色定义应以独立 skill 目录下的 `SKILL.md` 为准。
 
+## HTML 规格站点
+
+- 默认开启：生成或初始化规格文档时，同时生成 feature 级 `overview.html` 与项目级 `codespec/index.html`。
+- 如需关闭自动生成，在下方配置块中将 `enabled` 改为 `false`；关闭后仍可通过命令手动生成。
+- 手动转换存量规格：`python skills/quick-sdd/scripts/generate_overview.py --repo-root . --all`。
+
+<!-- QUICK-SDD-HTML-START -->
+```yaml
+quick_sdd:
+  html_export:
+    enabled: true
+```
+<!-- QUICK-SDD-HTML-END -->
+
 ## 路由规则
 
 1. `pm` 是唯一的路由角色。

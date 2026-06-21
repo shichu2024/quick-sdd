@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from generate_overview import generate_site
+
 
 PLACEHOLDER_RE = re.compile(r"\{\{([a-zA-Z0-9_]+)\}\}")
 FEATURE_DIR_RE = re.compile(r"^FEAT-(\d+)(?:-.+)?$")
@@ -134,6 +136,7 @@ class InitSummary:
     created: list[str]
     updated: list[str]
     skipped: list[str]
+    html_generated: list[str]
     feature_id: str = ""
     feature_dir: str = ""
 
@@ -146,7 +149,7 @@ class CodeSpecInitializer:
         self.codespec_dir = repo_root / "codespec"
         self.runtime_dir = self.codespec_dir / "runtime"
         self.specs_dir = self.codespec_dir / "specs"
-        self.summary = InitSummary(created=[], updated=[], skipped=[])
+        self.summary = InitSummary(created=[], updated=[], skipped=[], html_generated=[])
         self.timestamp = now_iso()
 
     def template(self, name: str) -> str:
@@ -216,6 +219,7 @@ class CodeSpecInitializer:
         actor: str,
         capability: str,
         value: str,
+        generate_html: bool = True,
     ) -> None:
         feature_id = next_feature_id(self.specs_dir)
         feature_slug = slugify(feature_title)
@@ -289,6 +293,8 @@ class CodeSpecInitializer:
 
         self.update_readme_with_feature(feature_id, feature_title, feature_dir, priority)
         self.update_state_for_feature(feature_dir)
+        if generate_html:
+            self.generate_html_for_feature(feature_path)
 
     def update_readme_with_feature(
         self, feature_id: str, feature_title: str, feature_dir: str, priority: str
@@ -327,6 +333,18 @@ class CodeSpecInitializer:
         dump_json(state_path, state)
         self.summary.updated.append(str(state_path))
 
+    def generate_html_for_feature(self, feature_path: Path) -> None:
+        result = generate_site(
+            repo_root=self.repo_root,
+            feature_dirs=[feature_path],
+            include_index=True,
+            respect_agents_config=True,
+        )
+        if result.get("status") == "SKIPPED":
+            self.summary.skipped.append(f"html_generation:{result.get('reason', 'skipped')}")
+            return
+        self.summary.html_generated.extend(result.get("generated", []))
+
     def normalize_idle_state(self) -> None:
         state_path = self.runtime_dir / "state.json"
         state = load_json(state_path)
@@ -364,6 +382,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--actor", default="用户", help="故事模板中的 actor")
     parser.add_argument("--capability", help="故事模板中的 capability，默认等于 feature 标题")
     parser.add_argument("--value", default="完成目标", help="故事模板中的 value")
+    parser.add_argument(
+        "--no-html",
+        action="store_true",
+        help="本次初始化不生成 HTML；AGENTS.md 中的 quick_sdd.html_export.enabled=false 也会关闭自动生成",
+    )
     return parser
 
 
@@ -397,6 +420,7 @@ def main() -> int:
             actor=args.actor,
             capability=capability,
             value=args.value,
+            generate_html=not args.no_html,
         )
     else:
         initializer.normalize_idle_state()
@@ -407,6 +431,7 @@ def main() -> int:
         "created": initializer.summary.created,
         "updated": initializer.summary.updated,
         "skipped": initializer.summary.skipped,
+        "html_generated": initializer.summary.html_generated,
         "feature_id": initializer.summary.feature_id,
         "feature_dir": initializer.summary.feature_dir,
     }

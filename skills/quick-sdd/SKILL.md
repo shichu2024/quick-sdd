@@ -59,7 +59,9 @@ codespec/
 ## 内置脚本
 
 - `scripts/init_codespec.py`
-  - 初始化 `AGENTS.md`、`codespec/` 与 feature 骨架。
+  - 初始化 `AGENTS.md`、`codespec/` 与 feature 骨架；默认同时生成 HTML 规格站点。
+- `scripts/generate_overview.py`
+  - 生成 feature 级 `overview.html` 与项目级 `codespec/index.html`，也可用于转换存量规格文档。
 - `scripts/sync_validation_snapshot.py`
   - 把 `validation-report.md` 的最近 QA 裁决同步到 `state.json.latest_validation`。
 - `scripts/resume_orchestrator.py`
@@ -74,7 +76,23 @@ codespec/
 1. 运行 `scripts/init_codespec.py --repo-root <项目根目录> [--feature-title <标题>]`，或按 `templates/` 手动创建同等结构。
 2. 如果已有旧版 `AGENT.md`，迁移到 `AGENTS.md`；如果已有类似入口文件，合并 Quick SDD 规则，不创建平行规范。
 3. 有明确 feature 时，只创建当前阶段需要的骨架，不顺手写满后续角色产物。
-4. 初始化后将 `active_phase` 设为 `proposal` 或 `idle`，并把下一跳写进 `resume.next_role / resume.next_action`。
+4. 初始化时如 `AGENTS.md` 未关闭 `quick_sdd.html_export.enabled`，同步生成 `overview.html` 与 `codespec/index.html`。
+5. 初始化后将 `active_phase` 设为 `proposal` 或 `idle`，并把下一跳写进 `resume.next_role / resume.next_action`。
+
+## HTML 规格站点
+
+- 自动生成默认开启；在项目根目录 `AGENTS.md` 的 `quick_sdd.html_export.enabled` 改为 `false` 可关闭自动生成。
+- 关闭自动生成后，仍可手动触发：
+
+```bash
+python skills/quick-sdd/scripts/generate_overview.py --repo-root <项目根目录> --all
+```
+
+- 单个 feature 也可继续使用兼容入口：
+
+```bash
+python skills/quick-sdd/scripts/generate_overview.py <feature_dir>
+```
 
 ## 续跑流程
 

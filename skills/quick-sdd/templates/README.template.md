@@ -33,6 +33,17 @@
 |----|------|------|--------|------|
 | {{feature_id}} | {{feature_title}} | proposal | P1 | specs/{{feature_dir}}/ |
 
+## HTML 规格站点
+
+- 项目级入口：`codespec/index.html`
+- Feature 级入口：`codespec/specs/<feature>/overview.html`
+- 自动生成默认开启，可在项目根目录 `AGENTS.md` 的 `quick_sdd.html_export.enabled` 中关闭。
+- 手动转换存量规格：
+
+```bash
+python skills/quick-sdd/scripts/generate_overview.py --repo-root . --all
+```
+
 ## 状态说明
 
 ### Feature 状态
