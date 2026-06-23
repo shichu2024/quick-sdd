@@ -19,7 +19,7 @@ description: >
 - `codespec/README.md`
 - 当前 feature 的 `proposal.md`
 - 当前 feature 的 `stories.md`
-- 当前 feature 的 `architecture.md`
+- 当前 feature 的 `architecture.md`（若存在；若 `stories.md` frontmatter 中 `architecture_needed: false`，则审计跳过决定是否站得住）
 - 当前 feature 的 `tasks.md`
 - 当前 story 涉及的代码变更和验证证据
 - 已存在的 `validation-report.md`
@@ -27,7 +27,7 @@ description: >
 
 ## 何时使用
 
-- `ta` 完成 stories/architecture，或 `dev` 完成 tasks/实现
+- `ta` 完成 stories（及按评估结论产出的 architecture），或 `dev` 完成 tasks/实现
 - 需要对 SDD 文档链做正式审计
 - 需要对 acceptance criteria 做正式质量验证
 - 需要给出回流建议或阶段推进建议
@@ -43,7 +43,7 @@ description: >
 1. `Context Gathering`
    - 先确认 proposal、story、architecture、task、变更范围和证据来源
 2. `High-Level Review`
-   - 先看文档链是否连贯：proposal -> stories -> architecture -> tasks -> evidence
+   - 先看文档链是否连贯：proposal -> stories -> [architecture] -> tasks -> evidence；若 stories 评估为跳过 architecture，则检查跳过理由是否站得住，而不是要求 architecture.md 存在
 3. `Evidence Review`
    - 检查 verify 结果、手工证据、改动文件、边界行为和残余风险
 4. `Verdict`
@@ -57,7 +57,7 @@ description: >
 - 反馈要具体可执行，能指出是回流 `dev`、`ta`、`ra` 还是先回到 `pm`
 - 对 `conditional_pass`，必须写清剩余风险和接受条件
 - 在实现前就应关注 readiness 和测试计划，而不是等提交后才临时想怎么验
-- 验收时同时检查 proposal 范围、story 验收、architecture 一致性、tasks 边界、行为、证据、安全与残余风险
+- 验收时同时检查 proposal 范围、story 验收、architecture 一致性（若存在；若跳过则检查跳过理由）、tasks 边界、行为、证据、安全与残余风险
 - 可按可行性、完整性、风险、资源四个维度组织审议，避免纯主观评论
 - `fail / conditional_pass` 时必须把问题归类到 `implementation / task_boundary / dependency / requirement_gap / architecture_gap / evidence_gap / risk_acceptance` 等结构化类型
 - 报告目标是支撑 PM 续跑，因此 verdict、证据、风险、回流动作都要写得可操作
@@ -111,7 +111,7 @@ description: >
 ## 完成门禁
 
 - 已逐条覆盖当前 story 的 acceptance
-- 已审计 `proposal.md / stories.md / architecture.md / tasks.md`
+- 已审计 `proposal.md / stories.md / tasks.md`，并按 `stories.md` frontmatter 的 `architecture_needed` 结论审计 `architecture.md`（若需要）或审计跳过理由（若跳过）
 - 证据链足够支撑 verdict
 - `fail / conditional_pass` 时已补全 `root_cause_type / reroute_to / reroute_action`
 - `validation-report.md` 可直接被 PM 消费
@@ -135,7 +135,7 @@ next_action:
 ## 禁止事项
 
 - 不要直接改业务代码
-- 不要重写 `proposal.md`、`stories.md`、`architecture.md` 或 `tasks.md`
+- 不要重写 `proposal.md`、`stories.md`、`architecture.md`（若存在）或 `tasks.md`
 - 不要更新 `acceptance.md`
 - 不要替 RA 下最终需求验收结论
 - 不要在证据不足时给 `pass`

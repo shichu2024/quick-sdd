@@ -262,9 +262,9 @@ class CodeSpecInitializer:
         stories_content = stories_content.replace("priority: P1", f"priority: {priority}")
         write_text(stories_path, stories_content)
 
-        architecture_path = feature_path / "architecture.md"
-        architecture_content = render_template(self.template("architecture.template.md"), values)
-        write_text(architecture_path, architecture_content)
+        # architecture.md 为条件产物，不在初始化时强制创建；
+        # stories.md frontmatter 默认 architecture_needed: false（默认跳过），
+        # 由 TA 在 stories 阶段评估后决定是否需要创建 architecture.md。
 
         tasks_path = feature_path / "tasks.md"
         tasks_content = render_template(self.template("task.template.md"), values)
@@ -282,7 +282,6 @@ class CodeSpecInitializer:
             [
                 str(proposal_path),
                 str(stories_path),
-                str(architecture_path),
                 str(tasks_path),
                 str(validation_path),
                 str(acceptance_path),
@@ -326,7 +325,7 @@ class CodeSpecInitializer:
         state["resume"] = {
             "mode": "init",
             "next_role": "ra",
-            "next_action": "完善 proposal.md，完成后交给 ta 编写 stories.md 与 architecture.md",
+            "next_action": "完善 proposal.md，完成后交给 ta 编写 stories.md 并做架构影响评估",
         }
         state["blocked"] = []
         state["last_updated"] = self.timestamp

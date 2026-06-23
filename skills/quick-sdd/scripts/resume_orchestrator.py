@@ -21,6 +21,7 @@ from sync_validation_snapshot import resolve_validation_routing
 
 
 STORY_SECTION_RE = re.compile(r"^##\s+ST-[^\n]*\n(?P<body>.*?)(?=^##\s+ST-|\Z)", re.M | re.S)
+DOC_FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.S)
 OPEN_TASK_STATUSES = {"todo", "in_progress"}
 def normalize_scalar(value: Any) -> str:
     return str(value or "").strip().strip("`")
@@ -69,6 +70,28 @@ def parse_stories_markdown(stories_path: Path) -> tuple[list[dict[str, Any]], di
         story_list.append(story)
         stories_by_id[story_id] = story
     return story_list, stories_by_id
+
+
+def parse_stories_doc_frontmatter(stories_path: Path) -> dict[str, Any]:
+    """读取 stories.md 顶部文档级 YAML frontmatter（架构影响评估结论的单一真相源）。"""
+    if not stories_path.exists():
+        return {}
+    text = read_text(stories_path)
+    match = DOC_FRONTMATTER_RE.search(text)
+    if not match:
+        return {}
+    data = parse_yaml(match.group(1))
+    if not isinstance(data, dict):
+        return {}
+    return data
+
+
+def architecture_needed_flag(frontmatter: dict[str, Any]) -> bool | None:
+    """返回 True/False/None；None 表示尚未评估。"""
+    raw = frontmatter.get("architecture_needed")
+    if raw is None or str(raw).strip() == "":
+        return None
+    return str(raw).strip().lower() in {"true", "yes", "1"}
 
 
 def latest_validation_hint(state: dict[str, Any], validation_routing: dict[str, str] | None = None) -> dict[str, Any]:
@@ -250,6 +273,7 @@ def recommend_next_step(
     stories_by_id: dict[str, dict[str, Any]],
     tasks_by_id: dict[str, dict[str, Any]],
     hint: dict[str, Any],
+    stories_frontmatter: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     active_feature = str(state.get("active_feature", "") or "")
     active_phase = str(state.get("active_phase", "") or "idle")
@@ -341,13 +365,32 @@ def recommend_next_step(
             "reason": "当前处于 proposal 阶段，应继续由 RA 完成需求分析。",
         }
     if active_phase == "stories":
+        arch_flag = architecture_needed_flag(stories_frontmatter or {})
+        if arch_flag is True:
+            return {
+                "phase": "architecture",
+                "resume_mode": "continue",
+                "next_role": "ta",
+                "next_action": "stories.md 已完成架构影响评估（architecture_needed: true），编写 architecture.md。",
+                "dispatch": {"role": "ta", "story": active_story, "task": ""},
+                "reason": "stories.md frontmatter 标记需要架构，进入 architecture 阶段。",
+            }
+        if arch_flag is False:
+            return {
+                "phase": "planning",
+                "resume_mode": "continue",
+                "next_role": "dev",
+                "next_action": "stories.md 已完成架构影响评估（architecture_needed: false），直接编写 tasks.md、依赖、ACL 与 verify。",
+                "dispatch": {"role": "dev", "story": active_story, "task": ""},
+                "reason": "stories.md frontmatter 标记跳过架构，直接进入 planning 阶段。",
+            }
         return {
             "phase": "stories",
             "resume_mode": "continue",
             "next_role": "ta",
-            "next_action": "补全 stories.md、acceptance criteria，并确认是否需要同步 architecture.md。",
+            "next_action": "补全 stories.md、acceptance criteria，并在 frontmatter 写入 architecture_needed 评估结论。",
             "dispatch": {"role": "ta", "story": active_story, "task": ""},
-            "reason": "当前处于 stories 阶段，应由 TA 完成用户故事和验收标准。",
+            "reason": "当前处于 stories 阶段，应由 TA 完成用户故事、验收标准和架构影响评估。",
         }
     if active_phase == "architecture":
         return {
@@ -361,11 +404,12 @@ def recommend_next_step(
     if active_phase == "planning":
         unplanned_story = find_unplanned_story(stories, tasks_by_id)
         story_id = str(unplanned_story.get("id", "") or "") if unplanned_story else active_story
+        arch_ref = "、architecture（若存在）" if architecture_needed_flag(stories_frontmatter or {}) is not False else ""
         return {
             "phase": "planning",
             "resume_mode": "continue",
             "next_role": "dev",
-            "next_action": "根据 proposal、stories 和 architecture 编写 tasks.md、依赖、ACL 与 verify。",
+            "next_action": f"根据 proposal、stories{arch_ref} 编写 tasks.md、依赖、ACL 与 verify。",
             "dispatch": {"role": "dev", "story": story_id, "task": ""},
             "reason": "当前处于 planning 阶段，应由 DEV 编写任务文档。",
         }
@@ -510,15 +554,20 @@ def main() -> int:
         stories: list[dict[str, Any]] = []
         stories_by_id: dict[str, dict[str, Any]] = {}
         tasks_by_id: dict[str, dict[str, Any]] = {}
+        stories_frontmatter: dict[str, Any] = {}
         if active_feature:
             feature_dir = repo_root / "codespec" / "specs" / active_feature
-            stories, stories_by_id = parse_stories_markdown(feature_dir / "stories.md")
+            stories_path = feature_dir / "stories.md"
+            stories, stories_by_id = parse_stories_markdown(stories_path)
+            stories_frontmatter = parse_stories_doc_frontmatter(stories_path)
             tasks_path = feature_dir / "tasks.md"
             if tasks_path.exists():
                 tasks_by_id, _ = parse_tasks_markdown(tasks_path)
         validation_routing = resolve_validation_routing(repo_root, state)
         hint = latest_validation_hint(state, validation_routing=validation_routing)
-        recommendation = recommend_next_step(state, stories, stories_by_id, tasks_by_id, hint)
+        recommendation = recommend_next_step(
+            state, stories, stories_by_id, tasks_by_id, hint, stories_frontmatter
+        )
         if args.apply:
             apply_recommendation(state_path, state, recommendation)
         payload = {

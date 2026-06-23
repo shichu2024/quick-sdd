@@ -711,11 +711,16 @@ def generate(feature_dir: Path) -> str:
 
     stories_meta, stories_body = {}, ""
     if stories_path.exists():
-        _, stories_body = parse_frontmatter(stories_path.read_text(encoding="utf-8"))
+        stories_meta, stories_body = parse_frontmatter(stories_path.read_text(encoding="utf-8"))
 
     arch_meta, arch_body = {}, ""
     if arch_path.exists():
         arch_meta, arch_body = parse_frontmatter(arch_path.read_text(encoding="utf-8"))
+
+    arch_needed_raw = str(stories_meta.get("architecture_needed", "")).strip().lower()
+    has_arch = arch_path.exists()
+    arch_skipped = arch_needed_raw in {"false", "no", "0"} and not has_arch
+    arch_reason = str(stories_meta.get("architecture_reason", "") or "")
 
     tasks_meta, tasks_body = {}, ""
     if tasks_path.exists():
@@ -755,13 +760,17 @@ def generate(feature_dir: Path) -> str:
         sidebar_items.append(f'<a href="#{st["id"].lower()}" onclick="setActive(this)"><span class="dot s"></span>{st["id"]} {st["title"][:12]}</a>')
     sidebar_items.append("</div>")
 
-    sidebar_items.append(f'<div class="nav-grp"><div class="nav-grp-title">架构设计</div>')
-    sidebar_items.append(f'<a href="#architecture" onclick="setActive(this)"><span class="dot a"></span>架构概述</a>')
-    for sec in arch_sections:
-        if sec["level"] == 2:
-            anchor = f"arch-{sec['title'][:8]}"
-            sidebar_items.append(f'<a href="#{anchor}" onclick="setActive(this)"><span class="dot a"></span>{sec["title"]}</a>')
-    sidebar_items.append("</div>")
+    if has_arch or arch_skipped:
+        sidebar_items.append(f'<div class="nav-grp"><div class="nav-grp-title">架构设计</div>')
+        if has_arch:
+            sidebar_items.append(f'<a href="#architecture" onclick="setActive(this)"><span class="dot a"></span>架构概述</a>')
+            for sec in arch_sections:
+                if sec["level"] == 2:
+                    anchor = f"arch-{sec['title'][:8]}"
+                    sidebar_items.append(f'<a href="#{anchor}" onclick="setActive(this)"><span class="dot a"></span>{sec["title"]}</a>')
+        else:
+            sidebar_items.append(f'<a href="#architecture" onclick="setActive(this)"><span class="dot a"></span>已跳过</a>')
+        sidebar_items.append("</div>")
 
     sidebar_items.append(f'<div class="nav-grp"><div class="nav-grp-title">任务清单</div>')
     sidebar_items.append(f'<a href="#tasks" onclick="setActive(this)"><span class="dot t"></span>任务索引</a>')
@@ -811,7 +820,7 @@ def generate(feature_dir: Path) -> str:
     body.append(f"""<div class="stats">
 <div class="stat s1"><div class="n">1</div><div class="l">提案</div></div>
 <div class="stat s2"><div class="n">{len(stories)}</div><div class="l">用户故事</div></div>
-<div class="stat s3"><div class="n">{len(arch_sections)}</div><div class="l">架构章节</div></div>
+<div class="stat s3"><div class="n">{"跳过" if arch_skipped else (len(arch_sections) if has_arch else "—")}</div><div class="l">架构章节</div></div>
 <div class="stat s4"><div class="n">{done_tasks}/{total_tasks}</div><div class="l">任务完成</div></div>
 </div>""")
 
@@ -930,40 +939,47 @@ def generate(feature_dir: Path) -> str:
     body.append("</section>")
 
     # ── ARCHITECTURE ──
-    body.append(f"""<section class="section" id="architecture">
+    if has_arch:
+        body.append(f"""<section class="section" id="architecture">
 <div class="sec-hd"><div class="sec-ico a">{SVG["layers"]}</div><h2>架构设计 · Architecture</h2></div>""")
 
-    for sec in arch_sections:
-        if not sec["title"]:
-            continue
-        body_text = "\n".join(sec["lines"]).strip()
-        anchor = f"arch-{sec['title'][:8]}"
+        for sec in arch_sections:
+            if not sec["title"]:
+                continue
+            body_text = "\n".join(sec["lines"]).strip()
+            anchor = f"arch-{sec['title'][:8]}"
 
-        if sec["level"] == 1:
-            body.append(f'<div class="subsec"><h3>{html.escape(sec["title"])}</h3>')
-            body.append(f'<div class="card"><div class="prose">{md_to_html(body_text)}</div></div>')
-            sub_secs = extract_sections(body_text)
-            for ss in sub_secs:
-                if ss["level"] <= 3 and ss["title"]:
-                    ss_body = "\n".join(ss["lines"]).strip()
-                    if ss_body:
-                        body.append(f'<h4>{html.escape(ss["title"])}</h4>')
-                        body.append(f'<div class="card"><div class="prose">{md_to_html(ss_body)}</div></div>')
-            body.append("</div>")
+            if sec["level"] == 1:
+                body.append(f'<div class="subsec"><h3>{html.escape(sec["title"])}</h3>')
+                body.append(f'<div class="card"><div class="prose">{md_to_html(body_text)}</div></div>')
+                sub_secs = extract_sections(body_text)
+                for ss in sub_secs:
+                    if ss["level"] <= 3 and ss["title"]:
+                        ss_body = "\n".join(ss["lines"]).strip()
+                        if ss_body:
+                            body.append(f'<h4>{html.escape(ss["title"])}</h4>')
+                            body.append(f'<div class="card"><div class="prose">{md_to_html(ss_body)}</div></div>')
+                body.append("</div>")
 
-        elif sec["level"] == 2:
-            body.append(f'<div class="subsec" id="{anchor}"><h3>{html.escape(sec["title"])}</h3>')
-            body.append(f'<div class="card"><div class="prose">{md_to_html(body_text)}</div></div>')
-            sub_secs = extract_sections(body_text)
-            for ss in sub_secs:
-                if ss["level"] == 3 and ss["title"]:
-                    ss_body = "\n".join(ss["lines"]).strip()
-                    if ss_body:
-                        body.append(f'<h4>{html.escape(ss["title"])}</h4>')
-                        body.append(f'<div class="card"><div class="prose">{md_to_html(ss_body)}</div></div>')
-            body.append("</div>")
+            elif sec["level"] == 2:
+                body.append(f'<div class="subsec" id="{anchor}"><h3>{html.escape(sec["title"])}</h3>')
+                body.append(f'<div class="card"><div class="prose">{md_to_html(body_text)}</div></div>')
+                sub_secs = extract_sections(body_text)
+                for ss in sub_secs:
+                    if ss["level"] == 3 and ss["title"]:
+                        ss_body = "\n".join(ss["lines"]).strip()
+                        if ss_body:
+                            body.append(f'<h4>{html.escape(ss["title"])}</h4>')
+                            body.append(f'<div class="card"><div class="prose">{md_to_html(ss_body)}</div></div>')
+                body.append("</div>")
 
-    body.append("</section>")
+        body.append("</section>")
+    elif arch_skipped:
+        skip_reason = f"：{html.escape(arch_reason)}" if arch_reason else ""
+        body.append(f"""<section class="section" id="architecture">
+<div class="sec-hd"><div class="sec-ico a">{SVG["layers"]}</div><h2>架构设计 · Architecture</h2><span class="sec-cnt">已跳过</span></div>
+<div class="card"><div class="prose"><p>本 feature 经 TA 评估跳过架构设计文档{skip_reason}。QA 会审计跳过理由是否站得住。</p></div></div>
+</section>""")
 
     # ── TASKS ──
     body.append(f"""<section class="section" id="tasks">

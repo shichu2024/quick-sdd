@@ -23,7 +23,7 @@ description: >
 - `AGENTS.md`
 - `codespec/README.md`
 - `codespec/runtime/state.json`
-- 必要时读取目标 feature 的 `proposal.md`、`stories.md`、`architecture.md`、`tasks.md`、`validation-report.md`、`acceptance.md`
+- 必要时读取目标 feature 的 `proposal.md`、`stories.md`、`architecture.md`（若存在）、`tasks.md`、`validation-report.md`、`acceptance.md`
 - 如需共享角色方法，补读 `skills/quick-sdd/references/role-capability-playbook.md`
 
 ## 安装依赖
@@ -55,7 +55,7 @@ description: >
 1. 当前是 `init / continue / repair / validate / redirect` 哪一种
 2. 当前工作区是否已有 `codespec/`
 3. 当前 `active_feature / active_dispatch / latest_validation` 是否对齐
-4. 下一棒应该是谁：RA 写 proposal，TA 写 stories/architecture，DEV 写 tasks/实现，TA 审 tasks，QA 审全部文档，RA 做最终验收
+4. 下一棒应该是谁：RA 写 proposal，TA 写 stories（并做架构影响评估，按结论决定是否产出 architecture），DEV 写 tasks/实现，TA 审 tasks，QA 审全部文档，RA 做最终验收
 5. 本轮是否需要同步 QA 快照
 
 ## 工作步骤

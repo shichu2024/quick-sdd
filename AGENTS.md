@@ -136,7 +136,7 @@ next_action:
 
 1. `proposal.md` 由 RA 维护，定义问题、目标、范围和风险，不定义实现方案。
 2. `stories.md` 由 TA 维护，定义用户价值、验收标准和 story 依赖，不写执行命令。
-3. `architecture.md` 由 TA 维护，定义架构设计、技术边界、关键决策和接口契约。
+3. `architecture.md` 由 TA 维护，定义架构设计、技术边界、关键决策和接口契约；为**条件产物**，TA 在 `stories.md` 顶部 frontmatter 写入 `architecture_needed` 评估结论（单一真相源），不确定时默认需要，跳过时 QA 审计理由是否站得住。
 4. `tasks.md` 由 DEV 维护，定义执行计划、ACL、依赖和验证方式；TA 负责审计。
 5. `validation-report.md` 由 QA 维护，保存全部文档审计、验证结果和轻量 traceability。
 6. `acceptance.md` 由 RA 维护，保存最终需求验收决定；RA 对最终结果负责。

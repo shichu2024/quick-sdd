@@ -122,17 +122,24 @@ python skills/quick-sdd/scripts/resolve_dispatch.py --repo-root <项目根目录
 
 ## 状态流转
 
-Feature 主流程：
+Feature 主流程（architecture 为条件阶段，由 TA 在 stories 阶段评估）：
 
 ```text
-idle -> proposal -> stories -> architecture -> planning -> task_review -> implementing -> validating -> accepting -> done
+idle -> proposal -> stories -> planning -> task_review -> implementing -> validating -> accepting -> done
+                            ↘ architecture ↗
 ```
+
+TA 在 `stories.md` 顶部 frontmatter 写入 `architecture_needed`：
+
+- `architecture_needed: true`：`stories -> architecture -> planning`
+- `architecture_needed: false`：`stories -> planning`（跳过 architecture）
+- 默认跳过：TA 先判断是否同类增量，命中"不需要"场景直接跳过；只有命中"需要"信号或真正无法评估影响半径时才标记 `true`（详见 TA skill 的判断标准表）
 
 回流规则：
 
 - `validating -> implementing`：实现问题。
 - `validating -> task_review`：task 边界、依赖、ACL 或 verify 问题。
-- `validating -> architecture`：架构缺口或接口契约不清。
+- `validating -> architecture`：架构缺口或接口契约不清；若此前跳过 architecture，TA 需补写 `architecture.md` 并把 frontmatter 改为 `architecture_needed: true`。
 - `validating -> accepting`：QA 通过或有条件通过，交给 RA 最终验收。
 - `accepting -> done`：RA 接受最终结果。
 - 任意活动状态可以进入 `blocked`，解除后回到进入阻塞前的活动状态。

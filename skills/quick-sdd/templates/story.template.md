@@ -1,6 +1,13 @@
+---
+architecture_needed: false
+architecture_reason: "既有架构内的同类增量（待 TA 评估确认）"
+---
+
 # 用户故事 / Story设计说明书
 
 > Owner: `ta`。Story 文档定义用户可感知价值、验收标准、依赖关系和 story 级设计约束；不要写 task ACL、执行命令或实现任务清单。
+>
+> **架构影响评估**：TA 必须在上方 frontmatter 写入 `architecture_needed`（`true`/`false`）和 `architecture_reason`。这是 `resume_orchestrator.py` 决定 stories 阶段下一跳的唯一真相源。默认跳过：先判断是否同类增量，命中"不需要"场景直接 `false`；只有命中"需要"信号或真正无法评估影响半径时才标记 `true`。评估为 `false` 时不创建 `architecture.md`，QA 会审计跳过理由是否站得住。
 
 ---
 
@@ -62,7 +69,7 @@ depends_on: []
 - **现状**：
 - **要求**：
 - **需求分析文档参考**：[{{feature_title}} - 需求分析说明书](./proposal.md)
-- **架构设计文档参考**：[{{feature_title}} - 架构设计说明书](./architecture.md)
+- **架构设计文档参考**：[{{feature_title}} - 架构设计说明书](./architecture.md)（仅当 frontmatter `architecture_needed: true` 时存在）
 
 ### 1.1.2 验收标准
 
@@ -118,7 +125,7 @@ depends_on: []
 # 3 Story级设计
 
 > [!NOTE]
-> 本章描述 story 为了达成验收标准所需的分析思路、功能规格和设计约束；详细架构事实仍以 `architecture.md` 为准，避免重复维护。
+> 本章描述 story 为了达成验收标准所需的分析思路、功能规格和设计约束；若 `architecture_needed: true`，详细架构事实仍以 `architecture.md` 为准，避免重复维护；若评估为跳过，本章承载 story 级设计约束即可。
 
 ## 3.1 功能分析
 
