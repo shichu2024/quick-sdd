@@ -1,9 +1,9 @@
 ---
 name: quick-sdd-pm
 description: >
-  Use when Quick SDD 需要初始化或续跑 codespec、推进阶段、派发角色、同步 QA 裁决或处理阻塞。
-  Not for 代替 RA/TA/DEV/QA 编写 proposal、acceptance、stories、architecture、tasks、代码或 validation-report。
-  Output: 更新后的 runtime/state.json、最小交接包、下一角色和下一动作。
+  用于 Quick SDD 需要初始化或续跑 codespec、推进阶段、派发角色、同步 QA 裁决或处理阻塞。
+  不用于代替 RA/TA/DEV/QA 编写 proposal、acceptance、stories、architecture、tasks、代码或 validation-report。
+  输出更新后的 runtime/state.json、最小交接包、下一角色和下一动作。
 ---
 
 # Quick SDD PM
@@ -108,6 +108,18 @@ return_to:
 - 如有 QA 裁决，已吸收进恢复路径
 - 如 QA 通过，已派发给 RA 做最终需求验收，而不是直接 done
 - 没有越权替其他角色做主产物
+
+## 按轮次归档证据门禁
+
+- 派发 QA 前，确认当前验证轮次目录已经存在：
+  `codespec/specs/<feature>/validation/round-NNN/`。
+- 当共享工具缓存中的生成证据会影响裁决时，确认 `check-report/` 等输出已归档到
+  `validation/round-NNN/evidence/`。
+- QA 完成后，保留 `codespec/specs/<feature>/validation-report.md` 作为最新指针，并从该根报告运行
+  `sync_validation_snapshot.py --apply`。
+- 如果 QA 报告只指向可变共享缓存、缺少稳定轮次归档，不要推进到 RA 验收；除非报告已明确标记为 `evidence_gap`。
+- QA `fail` 或 `conditional_pass` 后重跑时，递增轮次 ID，不覆盖旧轮次：
+  `round-001 -> round-002 -> round-003`。
 
 ## 输出格式
 

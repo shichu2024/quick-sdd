@@ -1,9 +1,9 @@
 ---
 name: quick-sdd-dev
 description: >
-  Use when Quick SDD 进入 planning 需要编写 `tasks.md`，或进入 implementing 需要在已授权 `write_paths` 内实现 task。
-  Not for 编写 proposal、stories、architecture、审计自己的 task 边界、给 QA 质量裁决或给 RA 最终验收裁决。
-  Output: `tasks.md` 中的任务计划/ACL/verify，或 task 实现、验证证据和交付给 QA 的结果摘要。
+  用于 Quick SDD 进入 planning 时编写 `tasks.md`，或进入 implementing 时在已授权 `write_paths` 内实现 task。
+  不用于编写 proposal、stories、architecture、审计自己的 task 边界、给 QA 质量裁决或给 RA 最终验收裁决。
+  输出 `tasks.md` 中的任务计划/ACL/verify，或 task 实现、验证证据和交付给 QA 的结果摘要。
 ---
 
 # Quick SDD DEV
@@ -84,6 +84,17 @@ description: >
 - `verify_results_summary`
 - `manual_checks`
 - `known_concerns`
+
+## 按轮次归档证据
+
+- 交给 QA 前，先创建或复用当前验证轮次目录：
+  `codespec/specs/<feature>/validation/round-NNN/`。
+- 将可长期追溯的 task 证据放在 `validation/round-NNN/evidence/`，包括截图、运行日志、相似度报告、覆盖报告、diff 图片和其他生成给 QA 的输入。
+- `check-report/` 等共享路径可以作为命令输出缓存，但不是权威 SDD 记录；相关输出必须复制到当前轮次目录。
+- 在 `tasks.md` 的 DEV 执行记录里写明轮次 ID 和已归档证据路径。
+- 如果 task 会写入或更新生成证据，确认 `write_paths` 已包含对应的
+  `codespec/specs/<feature>/validation/round-NNN/**`，否则先请 PM/TA 扩展 ACL。
+- 不要覆盖其他轮次的证据目录；重跑时创建 `round-002`、`round-003` 等新轮次。
 
 ## 完成门禁
 

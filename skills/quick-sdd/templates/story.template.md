@@ -1,13 +1,13 @@
 ---
-architecture_needed: false
-architecture_reason: "既有架构内的同类增量（待 TA 评估确认）"
+architecture_needed: true
+architecture_reason: ""
 ---
 
 # 用户故事 / Story设计说明书
 
 > Owner: `ta`。Story 文档定义用户可感知价值、验收标准、依赖关系和 story 级设计约束；不要写 task ACL、执行命令或实现任务清单。
 >
-> **架构影响评估**：TA 必须在上方 frontmatter 写入 `architecture_needed`（`true`/`false`）和 `architecture_reason`。这是 `resume_orchestrator.py` 决定 stories 阶段下一跳的唯一真相源。默认跳过：先判断是否同类增量，命中"不需要"场景直接 `false`；只有命中"需要"信号或真正无法评估影响半径时才标记 `true`。评估为 `false` 时不创建 `architecture.md`，QA 会审计跳过理由是否站得住。
+> **架构影响评估**：TA 必须在上方 frontmatter 写入 `architecture_needed`（`true`/`false`）和 `architecture_reason`。这是 `resume_orchestrator.py` 决定 stories 阶段下一跳的唯一真相源。不确定时默认 `true`。评估为 `false` 时不创建 `architecture.md`，QA 会审计跳过理由是否站得住。
 
 ---
 
