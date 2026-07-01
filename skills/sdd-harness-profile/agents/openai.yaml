@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDD Harness Profile"
+  short_description: "创建不改变可移植 SDD Harness core 的可选质量 profile"
+  default_prompt: "使用 $sdd-harness-profile 创建或更新可选 profile。不要让 profile 成为 core SDD 执行的必需条件。"

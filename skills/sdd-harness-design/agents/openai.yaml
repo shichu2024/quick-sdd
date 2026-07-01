@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDD Harness Design"
+  short_description: "设计可移植 SDD Harness core、adapter、profile 边界、评估策略和 rollout 门禁"
+  default_prompt: "使用 $sdd-harness-design 编写可移植 harness plan。保持 profile 可选，并把实际文件生成路由给 $sdd-harness-build。"

@@ -263,8 +263,8 @@ class CodeSpecInitializer:
         write_text(stories_path, stories_content)
 
         # architecture.md 为条件产物，不在初始化时强制创建；
-        # stories.md frontmatter 默认 architecture_needed: true（保守），
-        # 由 TA 在 stories 阶段评估后决定是否创建 architecture.md。
+        # stories.md frontmatter 默认 architecture_needed: false（默认跳过），
+        # 由 TA 在 stories 阶段评估后决定是否需要创建 architecture.md。
 
         tasks_path = feature_path / "tasks.md"
         tasks_content = render_template(self.template("task.template.md"), values)

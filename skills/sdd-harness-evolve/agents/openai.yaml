@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDD Harness Evolve"
+  short_description: "把重复 SDD Harness 失败沉淀为持久规则、模板、评估用例或可选 profile 更新"
+  default_prompt: "只有在存在重复或高影响 harness 失败证据时，才使用 $sdd-harness-evolve。更新 evolution log，并添加回归评估用例。"

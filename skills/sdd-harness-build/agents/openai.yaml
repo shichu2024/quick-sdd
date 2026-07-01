@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDD Harness Build"
+  short_description: "根据已批准的 plan 创建或更新具体 SDD Harness 产物"
+  default_prompt: "使用 $sdd-harness-build 根据 plan 落地 codespec/harness 产物。保持可移植性，不要编写 feature 归属的 SDD 文档。"

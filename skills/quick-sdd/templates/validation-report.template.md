@@ -1,11 +1,5 @@
 # 验证报告
 
-> 最新摘要：本文档只汇总当前 feature 的最新 QA 裁决。
-> 当前轮次：`round-001`
-> 轮次报告：`validation/round-001/validation-report.md`
-> 权威证据目录：`validation/round-001/evidence/`
-> `check-report/...` 等共享工具输出路径仅作缓存，可能被后续轮次覆盖。
-
 ## 功能总结
 
 - 功能 ID：{{feature_id}}

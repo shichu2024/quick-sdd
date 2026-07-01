@@ -51,18 +51,6 @@ description: >
 4. `Verdict`
    - 给出 `pass / conditional_pass / fail`
 
-## 按轮次归档证据
-
-- QA 每次只验证一个明确轮次：`codespec/specs/<feature>/validation/round-NNN/`。
-- 轮次报告位于 `validation/round-NNN/validation-report.md`；feature 根目录的
-  `validation-report.md` 只作为 PM 脚本和人工读取的最新指针/摘要。
-- 如果最新工具输出仍在 `check-report/` 等共享路径，正式裁决前要求先复制到
-  `validation/round-NNN/evidence/`。
-- 如果旧运行没有按轮次归档导致证据缺失，在 `round-manifest.md` 和 QA 报告中标记
-  `historical-import` 或 `evidence_gap`。
-- QA 报告必须列出轮次 ID、轮次报告路径和权威证据目录。
-- 除非报告明确说明是在做跨轮次趋势分析，否则不要混用不同轮次的截图或报告进行比较。
-
 ## QA 要吸收的优秀实践
 
 - 证据不足时，不要给 `pass`

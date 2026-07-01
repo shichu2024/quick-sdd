@@ -133,7 +133,7 @@ TA 在 `stories.md` 顶部 frontmatter 写入 `architecture_needed`：
 
 - `architecture_needed: true`：`stories -> architecture -> planning`
 - `architecture_needed: false`：`stories -> planning`（跳过 architecture）
-- 不确定时默认 `true`（保守原则）
+- 默认跳过：TA 先判断是否同类增量，命中"不需要"场景直接跳过；只有命中"需要"信号或真正无法评估影响半径时才标记 `true`（详见 TA skill 的判断标准表）
 
 回流规则：
 
@@ -153,22 +153,6 @@ TA 在 `stories.md` 顶部 frontmatter 写入 `architecture_needed`：
 - `acceptance.md` 是 RA 最终需求验收事实源；QA 报告只是它的输入。
 - `resolve_dispatch.py` 只消费 state 快照，不直接回退解析 QA 报告。
 - 统一闭环顺序：`validation-report.md -> sync_validation_snapshot.py -> state.json.latest_validation -> resume_orchestrator.py -> resolve_dispatch.py -> acceptance.md`。
-
-## 按轮次归档证据
-
-- 将 `check-report/` 等共享输出目录视为工具缓存，不作为长期 SDD 证据。
-- 每次正式验证都必须有稳定的轮次目录：
-  `codespec/specs/<feature>/validation/round-NNN/`。
-- 使用补零且单调递增的轮次 ID：`round-001`、`round-002`、`round-003`。
-- 轮次 QA 报告存放在：
-  `codespec/specs/<feature>/validation/round-NNN/validation-report.md`。
-- 该轮原始证据存放在：
-  `codespec/specs/<feature>/validation/round-NNN/evidence/`。
-- `codespec/specs/<feature>/validation-report.md` 只保留为给脚本和人工阅读的最新指针/摘要。
-  摘要中必须写明当前轮次，并链接到轮次报告和证据目录。
-- 工具必须写入共享路径时，在 QA 或 RA 裁决前先把相关输出归档/复制到当前轮次目录。
-- 不要把不同轮次的截图、运行报告、相似度报告、覆盖报告或 diff 产物混放在同一个证据目录。
-- 如果旧证据是在本规则建立前生成且无法恢复，创建历史轮次 manifest，并明确标注证据缺口。
 
 ## 输出要求
 

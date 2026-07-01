@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDD Harness Audit"
+  short_description: "审计 SDD Harness 的可移植性、角色漂移、状态一致性和证据纪律"
+  default_prompt: "使用 $sdd-harness-audit 检查当前仓库的 SDD Harness 就绪度和漂移。把发现写入 codespec/harness/audits/，不要修改 feature 归属产物。"

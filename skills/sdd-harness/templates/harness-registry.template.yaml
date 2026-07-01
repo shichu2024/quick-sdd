@@ -1,0 +1,16 @@
+version: 1
+core:
+  enabled: true
+  contract_ref: skills/sdd-harness/references/core-contract.md
+  portable_without_profiles: true
+adapters:
+  - id: local-filesystem
+    description: "使用仓库内 codespec/ 文件作为共享状态面。"
+profiles: []
+eval:
+  required_before_rollout: true
+  cases_path: codespec/harness/eval/cases
+  latest_run:
+evolution:
+  log_path: codespec/harness/evolution-log.md
+

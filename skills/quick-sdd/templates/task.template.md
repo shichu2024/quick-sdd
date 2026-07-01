@@ -71,4 +71,3 @@ DEV 在 `planning` 阶段把本文件改写为真实任务。每个真实 task �
 
 - `read_paths` 和 `write_paths` 使用 glob 路径模式。
 - 不要在这里重复完整的验收标准。
-- 验证产物、截图、diff 和报告应归档到 `validation/round-NNN/evidence/`；共享 `check-report/` 只作为工具输出缓存。

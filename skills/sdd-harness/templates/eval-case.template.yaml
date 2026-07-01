@@ -1,0 +1,14 @@
+id:
+type: should_trigger # 可选值：should_trigger | should_not_trigger | dry_run | ab_artifact | portability | drift_regression
+input:
+expected:
+  skill:
+  writes: []
+  must_not_write: []
+rubric:
+  routing:
+  portability:
+  evidence:
+  acl:
+  profile_hygiene:
+notes:

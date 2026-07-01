@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDD Harness Eval"
+  short_description: "评估 SDD Harness 的路由、可移植性、质量提升和抗漂移能力"
+  default_prompt: "使用 $sdd-harness-eval 测试 harness 本身。产品 QA 裁决仍交给 $quick-sdd-qa，RA 最终验收仍交给 $quick-sdd-ra。"
