@@ -202,6 +202,31 @@ class GenerateOverviewTests(unittest.TestCase):
             self.assertTrue((repo_root / "codespec" / "index.html").exists())
             self.assertGreaterEqual(len(payload["html_generated"]), 2)
 
+    def test_init_codespec_copies_git_submit_template_to_repo_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = Path(tmp)
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT_DIR / "init_codespec.py"),
+                    "--repo-root",
+                    str(repo_root),
+                ],
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+
+            payload = json.loads(completed.stdout)
+            git_submit_path = repo_root / "git-submit.md"
+            template_path = (
+                REPO_ROOT / "skills" / "quick-sdd" / "templates" / "git-submit.template.md"
+            )
+            self.assertTrue(git_submit_path.exists())
+            self.assertEqual(git_submit_path.read_bytes(), template_path.read_bytes())
+            self.assertIn(str(git_submit_path), payload["created"])
+
 
 if __name__ == "__main__":
     unittest.main()

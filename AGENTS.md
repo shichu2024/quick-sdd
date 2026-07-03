@@ -49,7 +49,7 @@
 
 ## 接入方式
 
-1. 初始化 Quick SDD 时，在项目根目录生成 `AGENTS.md`。
+1. 初始化 Quick SDD 时，在项目根目录生成 `AGENTS.md` 与 `git-submit.md`。
 2. 如果项目已有旧版 `AGENT.md`，迁移为 `AGENTS.md`；如果已有类似文件，则把本模板中的 Quick SDD 规则合并进去，而不是重复创建平行规范。
 3. `AGENTS.md` 是项目级协作入口，`codespec/` 是项目级规格工作区，二者必须同时存在并互相引用。
 4. 角色协议不再维护在主 skill 的 `agents/*.md` 中；真正可发现的角色定义应以独立 skill 目录下的 `SKILL.md` 为准。
@@ -67,6 +67,17 @@ quick_sdd:
     enabled: true
 ```
 <!-- QUICK-SDD-HTML-END -->
+
+## Git 提交规范
+
+1. `git-submit.md` 是本 SDD 项目的 Git 提交消息单一规范源。
+2. 每次执行 `代码提交`或者`commit`时、为用户准备提交信息、或推进合入前，必须先读取并遵循 `git-submit.md`。
+3. 提交消息必须包含：单行标题、标题后的空行、中文正文变更说明。
+4. 标题必须符合 `git-submit.md` 定义的类型前缀与格式，例如 `FEAT-xxx`、`Iterate（FEAT-xxx）`、`Fix（FEAT-xxx）`、`Doc`、`Refactor`、`Style`、`Perf`、`Test`、`Chore`、`Revert`；标题不超过 72 字符。
+5. 业务相关提交必须尽量关联稳定特性编号，例如 `FEAT-001`；文档、构建、测试等非业务变更按 `git-submit.md` 选择对应类型。
+6. 提交正文必须说明本次变更做了什么、为什么这样做、核心改动点与必要验证证据，避免只写“修复 bug”“优化代码”等模糊描述。
+7. 提交应保持原子化：一个提交只做一件事；单次变更过大时优先拆分，便于 review、回滚和追踪。
+8. 若提交内容由 AI 辅助生成或设计，提交正文末尾必须按 `git-submit.md` 补充 `【AI 思考过程】` 段落，记录可公开审计的需求分析、方案依据、关键取舍、边界处理与验证结论。
 
 ## 路由规则
 

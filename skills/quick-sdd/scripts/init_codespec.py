@@ -32,6 +32,11 @@ def write_text(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8-sig", newline="\n")
 
 
+def copy_file(source: Path, target: Path) -> None:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(source.read_bytes())
+
+
 def render_template(content: str, values: dict[str, str]) -> str:
     def replace(match: re.Match[str]) -> str:
         key = match.group(1)
@@ -169,6 +174,13 @@ class CodeSpecInitializer:
         else:
             write_text(agent_path, self.template("agents.template.md"))
             self.summary.created.append(str(agent_path))
+
+        git_submit_path = self.repo_root / "git-submit.md"
+        if git_submit_path.exists():
+            self.summary.skipped.append(str(git_submit_path))
+        else:
+            copy_file(self.templates_dir / "git-submit.template.md", git_submit_path)
+            self.summary.created.append(str(git_submit_path))
 
         readme_path = self.codespec_dir / "README.md"
         if not readme_path.exists():

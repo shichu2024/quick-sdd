@@ -202,7 +202,7 @@ python scripts/list_install_targets.py --bundle quick-sdd-existing-project --rep
 主 skill 内置 4 个关键脚本原型：
 
 - `init_codespec.py`
-  - 初始化 `AGENTS.md`、`codespec/` 和 feature 骨架
+  - 初始化 `AGENTS.md`、`git-submit.md`、`codespec/` 和 feature 骨架
 - `sync_validation_snapshot.py`
   - 把 `validation-report.md` 中最近一次 QA 裁决标准化同步到 `state.json.latest_validation`
 - `resume_orchestrator.py`

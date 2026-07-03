@@ -1,7 +1,7 @@
 ---
 name: quick-sdd
 description: >
-  用于初始化、续跑和治理轻量级 SDD 工作区，需要生成/维护 `AGENTS.md`、`codespec/`、proposal、stories、architecture、tasks、validation 和 acceptance 产物。
+  用于初始化、续跑和治理轻量级 SDD 工作区，需要生成/维护 `AGENTS.md`、`git-submit.md`、`codespec/`、proposal、stories、architecture、tasks、validation 和 acceptance 产物。
   不用于跨角色直接包办 RA/TA/DEV/QA 的主产物，或跳过 SDD 直接实现代码。
   输出初始化结果、状态更新、权限展开或下一角色派发建议，基于 PM/RA/TA/DEV/TA/QA/RA 主链路。
 ---
@@ -33,6 +33,7 @@ description: >
 
 ```text
 AGENTS.md
+git-submit.md
 codespec/
   README.md
   specs/
@@ -59,7 +60,7 @@ codespec/
 ## 内置脚本
 
 - `scripts/init_codespec.py`
-  - 初始化 `AGENTS.md`、`codespec/` 与 feature 骨架；默认同时生成 HTML 规格站点。
+  - 初始化 `AGENTS.md`、`git-submit.md`、`codespec/` 与 feature 骨架；默认同时生成 HTML 规格站点。
 - `scripts/generate_overview.py`
   - 生成 feature 级 `overview.html` 与项目级 `codespec/index.html`，也可用于转换存量规格文档。
 - `scripts/sync_validation_snapshot.py`
