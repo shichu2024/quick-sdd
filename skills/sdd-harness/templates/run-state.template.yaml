@@ -1,0 +1,20 @@
+epic_id:
+objective:
+requested_feature_count:
+execution_mode: sequential
+auto_continue_authorized: false
+current_feature:
+features:
+  - id:
+    title:
+    status: planned
+    depends_on: []
+    codespec_path:
+    validation_ref:
+    acceptance_ref:
+aggregate:
+  decision:
+  open_risks: []
+  missing_coverage: []
+last_updated:
+

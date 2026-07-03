@@ -1,7 +1,7 @@
 ---
 name: sdd-harness
 description: >
-  用于创建、续跑、审计、设计、生成、评估或演进围绕 Quick SDD 的通用可移植 SDD Harness 系统。
+  用于创建、续跑、审计、设计、生成、评估、演进，或跨多个 feature 运行围绕 Quick SDD 的通用可移植 SDD Harness 系统。
   不用于直接编写 feature 的 proposal/stories/architecture/tasks/validation/acceptance、实现产品代码，或把领域 profile 作为必需依赖。
   输出路由决策、最小交接包，以及 `codespec/harness/` 下的 SDD Harness 产物位置。
 ---
@@ -26,13 +26,14 @@ Agent 很容易把“改进流程”写成散落在聊天里的提示词。本 s
 
 | 用户意图 | 使用 |
 |---|---|
+| “把一个大需求拆成多个 feature 并逐个走完 SDD” | `sdd-harness-run` |
 | “检查 SDD harness / 漂移 / 可复用性” | `sdd-harness-audit` |
 | “设计一套 harness / 架构怎么放” | `sdd-harness-design` |
 | “生成/安装 harness 产物” | `sdd-harness-build` |
 | “生成可选项目画像/profile” | `sdd-harness-profile` |
 | “测试 harness 是否有效” | `sdd-harness-eval` |
 | “把反复失败沉淀成规则” | `sdd-harness-evolve` |
-| “继续普通 feature 开发” | `quick-sdd` 或对应 Quick SDD 角色 skill |
+| “继续单个普通 feature 开发” | `quick-sdd` 或对应 Quick SDD 角色 skill |
 
 ## 先读
 

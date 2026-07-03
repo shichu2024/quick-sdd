@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDD Harness Run"
+  short_description: "把大需求拆成多个 feature，并编排它们按 Quick SDD 全流程逐个完成后做汇总验收"
+  default_prompt: "使用 $sdd-harness-run 编排跨 feature 的 epic run。维护 codespec/harness/runs/<epic-id>/ 状态，不要代替 Quick SDD 角色编写单个 feature 的主产物。"
+

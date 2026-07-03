@@ -1,4 +1,4 @@
 interface:
   display_name: "SDD Harness"
-  short_description: "用于审计、设计、生成、评估和演进 Quick SDD 工作区的通用可移植 harness 层"
-  default_prompt: "使用 $sdd-harness 路由 SDD Harness 工作。保持 core 可移植、profile 可选，并且不要直接编写 Quick SDD 角色拥有的 feature 产物。"
+  short_description: "用于运行、审计、设计、生成、评估和演进 Quick SDD 工作区的通用可移植 harness 层"
+  default_prompt: "使用 $sdd-harness 路由 SDD Harness 工作。大需求跨 feature 编排用 $sdd-harness-run；保持 core 可移植、profile 可选，并且不要直接编写 Quick SDD 角色拥有的 feature 产物。"

@@ -25,6 +25,7 @@ codespec/
     registry.yaml
     harness-plan.md
     audits/
+    runs/
     profiles/
     eval/
       cases/
@@ -51,4 +52,3 @@ evolution:
 ## 归属边界
 
 Harness skills 可以创建和维护 `codespec/harness/**`。它们可以建议修改 Quick SDD 产物，但 feature 级角色产物必须由对应 Quick SDD 角色 skill 编写，除非用户明确要求做一次性迁移。
-
